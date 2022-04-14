@@ -1,0 +1,25 @@
+﻿<Spritesheet>
+	<!--id  = PlayerState Enum-->
+	<Animation>
+		<id>0</id>
+		<firstPosX>0</firstPosX>
+		<firstPosY>0</firstPosY>
+		<nrFrames>9</nrFrames>
+		<width>61</width>
+		<height>130</height>
+		<isRepeating>1</isRepeating>
+		<repeatFrame>0</repeatFrame>
+	</Animation>
+
+	<Animation>
+		<id>1</id>
+		<firstPosX>0</firstPosX>
+		<firstPosY>131</firstPosY>
+		<nrFrames>13</nrFrames>
+		<width>86</width>
+		<height>130</height>
+		<isRepeating>1</isRepeating>
+		<repeatFrame>5</repeatFrame>
+	</Animation>
+</Spritesheet>
+
