@@ -21,25 +21,25 @@ Spritesheet::~Spritesheet()
 	size_t nrAnimations{ m_pAnimations.size() };
 	for (size_t i = 0; i < nrAnimations; i++)
 	{
-		delete m_pAnimations.at((PlayerState)i);
-		m_pAnimations.at((PlayerState)i) = nullptr;
+		delete m_pAnimations.at((AnimationState)i);
+		m_pAnimations.at((AnimationState)i) = nullptr;
 	}
 
 	m_pAnimations.clear();
 }
 
-void Spritesheet::Update(PlayerState state, float elapsedSec)
+void Spritesheet::Update(AnimationState state, float elapsedSec)
 {
 	//state manipulation + animation updating
 	m_pAnimations.at(state)->Update(elapsedSec);
 }
 
-void Spritesheet::Draw(PlayerState state) const
+void Spritesheet::Draw(AnimationState state, const Point2f& centerPos) const
 {
-	m_pAnimations.at(state)->Draw();
+	m_pAnimations.at(state)->Draw(centerPos);
 }
 
-void Spritesheet::ResetAnim(PlayerState id)
+void Spritesheet::ResetAnim(AnimationState id)
 {
 	m_pAnimations.at(id)->Reset();
 }
@@ -96,7 +96,7 @@ void Spritesheet::LoadAnimationsFromString(const std::string& spritesheetData)
 
 void Spritesheet::CreateAnimation(const std::string& animationData)
 {
-	PlayerState id{ static_cast<PlayerState>(std::stoi(GetAttributeValue("id", animationData))) };
+	AnimationState id{ static_cast<AnimationState>(std::stoi(GetAttributeValue("id", animationData))) };
 	Point2f firstPos{ std::stof(GetAttributeValue("firstPosX", animationData)),
 	m_pSprite->GetHeight() - std::stof(GetAttributeValue("firstPosY", animationData)) };
 	int nrFrames{ std::stoi(GetAttributeValue("nrFrames", animationData)) };

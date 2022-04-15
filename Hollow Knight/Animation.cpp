@@ -7,12 +7,11 @@ Animation::Animation(Texture* pTexture, const Point2f& firstPos, int nrFrames, f
 	m_FrameHeight{height},
 	m_IsRepeating{isRepeating},
 	m_RepeatFrame{repeatFrame},
-	m_FrameTime{0.1f},
+	m_FrameTime{0.0833f},
 	m_CurrentFrame{0},
 	m_AccumulatedTime{},
 	m_pTexture{pTexture}
 {
-
 	m_SrcRect.left = m_FirstPos.x;
 	m_SrcRect.bottom = m_FirstPos.y;
 	m_SrcRect.width = m_FrameWidth;
@@ -56,9 +55,10 @@ void Animation::Update(float elapsedSec)
 	}	
 }
 
-void Animation::Draw()
+void Animation::Draw(const Point2f& centerPos)
 {
-	m_pTexture->Draw(m_DstRect, m_SrcRect);
+	Point2f bottomLeft{ centerPos.x - m_FrameWidth / 2, centerPos.y - m_FrameHeight / 2 };
+	m_pTexture->Draw(bottomLeft, m_SrcRect);
 }
 
 void Animation::Reset()

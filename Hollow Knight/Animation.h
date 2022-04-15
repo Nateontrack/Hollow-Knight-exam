@@ -7,7 +7,7 @@ public:
 	Animation(Texture* pTexture, const Point2f& firstPos, int nrFrames, float width, float height, bool isRepeating = false, int repeatFrame = 0);
 	~Animation();
 
-	void Draw();
+	void Draw(const Point2f& centerPos);
 	void Update(float elapsedSec);
 
 	void Reset();

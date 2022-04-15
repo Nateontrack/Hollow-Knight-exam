@@ -1,7 +1,7 @@
 #pragma once
-#include "Animation.h"
-#include "Spritesheet.h"
 #include "GameObjectStates.h"
+#include "Level.h"
+#include "Player.h"
 
 class Game final
 {
@@ -26,9 +26,8 @@ public:
 private:
 	// DATA MEMBERS
 	const Window m_Window;
-	Spritesheet* m_pKnightSheet;
-	PlayerState m_PlayerState;
-
+	Level m_Level;
+	Player* m_Player;
 
 	// FUNCTIONS
 	void Initialize( );

@@ -8,13 +8,15 @@ public:
 	Spritesheet(const std::string& XMLFilePath, const std::string& srcImagePath);
 	~Spritesheet();
 
-	void Update(PlayerState state, float elapsedSec);
-	void Draw(PlayerState state) const;
-	void ResetAnim(PlayerState id);
+	void Update(AnimationState state, float elapsedSec);
+	void Draw(AnimationState state, const Point2f& centerPos) const;
+
+	void ResetAnim(AnimationState id);
+	
 
 private:
 	Texture* m_pSprite;
-	std::unordered_map<PlayerState, Animation*> m_pAnimations;
+	std::unordered_map<AnimationState, Animation*> m_pAnimations;
 
 	void LoadAnimationsFromFile(const std::string& XMLFilePath);
 	void LoadAnimationsFromString(const std::string& spritesheetData);

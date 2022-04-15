@@ -21,5 +21,61 @@
 		<isRepeating>1</isRepeating>
 		<repeatFrame>5</repeatFrame>
 	</Animation>
+
+	<Animation>
+		<id>2</id>
+		<firstPosX>0</firstPosX>
+		<firstPosY>131</firstPosY>
+		<nrFrames>13</nrFrames>
+		<width>86</width>
+		<height>130</height>
+		<isRepeating>1</isRepeating>
+		<repeatFrame>5</repeatFrame>
+	</Animation>
+
+	<Animation>
+		<id>3</id>
+		<firstPosX>0</firstPosX>
+		<firstPosY>131</firstPosY>
+		<nrFrames>13</nrFrames>
+		<width>86</width>
+		<height>130</height>
+		<isRepeating>1</isRepeating>
+		<repeatFrame>5</repeatFrame>
+	</Animation>
+
+	<Animation>
+		<id>4</id>
+		<firstPosX>0</firstPosX>
+		<firstPosY>131</firstPosY>
+		<nrFrames>13</nrFrames>
+		<width>86</width>
+		<height>130</height>
+		<isRepeating>1</isRepeating>
+		<repeatFrame>5</repeatFrame>
+	</Animation>
+
+	<Animation>
+		<id>5</id>
+		<firstPosX>0</firstPosX>
+		<firstPosY>131</firstPosY>
+		<nrFrames>13</nrFrames>
+		<width>86</width>
+		<height>130</height>
+		<isRepeating>1</isRepeating>
+		<repeatFrame>5</repeatFrame>
+	</Animation>
+	
+	<Animation>
+		<id>6</id>
+		<firstPosX>0</firstPosX>
+		<firstPosY>131</firstPosY>
+		<nrFrames>13</nrFrames>
+		<width>86</width>
+		<height>130</height>
+		<isRepeating>1</isRepeating>
+		<repeatFrame>5</repeatFrame>
+	</Animation>
+	
 </Spritesheet>
 

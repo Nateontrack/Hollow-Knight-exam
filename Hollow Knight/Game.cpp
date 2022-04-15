@@ -7,7 +7,8 @@
 
 Game::Game( const Window& window ) 
 	:m_Window{ window },
-	m_PlayerState{0}
+	m_Level{},
+	m_Player{ new Player{Point2f{m_Window.width / 2, 200}, 65, 125 } }
 {
 	Initialize( );
 }
@@ -19,14 +20,13 @@ Game::~Game( )
 
 void Game::Initialize( )
 {
-	m_pKnightSheet = new Spritesheet{ "Resources/XML/KnightAnimations.xml",
-		"Resources/Sprites/KnightSheet.png" };
+	
 }
 
 void Game::Cleanup( )
 {
-	delete m_pKnightSheet;
-	m_pKnightSheet = nullptr;
+	delete m_Player;
+	m_Player = nullptr;
 }
 
 void Game::Update( float elapsedSec )
@@ -41,34 +41,35 @@ void Game::Update( float elapsedSec )
 	//{
 	//	std::cout << "Left and up arrow keys are down\n";
 	//}
-	m_pKnightSheet->Update(m_PlayerState, elapsedSec);
+	m_Player->SetIsOnGround(m_Level.IsOnGround(m_Player->m_Hitbox));
+	m_Player->Update(elapsedSec);
+	m_Level.HandleCollision(m_Player->m_Hitbox, m_Player->m_Velocity);
 }
 
 void Game::Draw( ) const
 {
 	ClearBackground( );
-	m_pKnightSheet->Draw(m_PlayerState);
+	m_Level.DrawBackground();
+	m_Player->Draw();
+	m_Level.DrawForeground();
 }
 
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
 {
 	//std::cout << "KEYDOWN event: " << e.keysym.sym << std::endl;
+	m_Player->HandleKeyDown(e);
 }
 
 void Game::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )
 {
 	//std::cout << "KEYUP event: " << e.keysym.sym << std::endl;
-	switch ( e.keysym.sym )
+	/*switch ( e.keysym.sym )
 	{
 	case SDLK_KP_0:
-		m_PlayerState = (PlayerState)0;
-		m_pKnightSheet->ResetAnim(m_PlayerState);
 		break;
 	case SDLK_KP_1:
-		m_PlayerState = (PlayerState)1;
-		m_pKnightSheet->ResetAnim(m_PlayerState);
 		break;
-	}
+	}*/
 }
 
 void Game::ProcessMouseMotionEvent( const SDL_MouseMotionEvent& e )

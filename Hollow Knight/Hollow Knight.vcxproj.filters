@@ -13,6 +13,9 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
+    <Filter Include="Game Files\Animation">
+      <UniqueIdentifier>{f0dcab12-98b9-4d6e-bfd7-7ffad4e13729}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -51,13 +54,16 @@
     <ClCompile Include="Vector2f.cpp">
       <Filter>Framework Files</Filter>
     </ClCompile>
-    <ClCompile Include="Animation.cpp">
+    <ClCompile Include="Player.cpp">
       <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>Game Files\Animation</Filter>
     </ClCompile>
     <ClCompile Include="Spritesheet.cpp">
-      <Filter>Game Files</Filter>
+      <Filter>Game Files\Animation</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
+    <ClCompile Include="Level.cpp">
       <Filter>Game Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -95,16 +101,19 @@
     <ClInclude Include="Game.h">
       <Filter>Game Files</Filter>
     </ClInclude>
-    <ClInclude Include="Animation.h">
-      <Filter>Game Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Spritesheet.h">
-      <Filter>Game Files</Filter>
-    </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Game Files</Filter>
     </ClInclude>
     <ClInclude Include="GameObjectStates.h">
+      <Filter>Game Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Game Files\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Spritesheet.h">
+      <Filter>Game Files\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Level.h">
       <Filter>Game Files</Filter>
     </ClInclude>
   </ItemGroup>
