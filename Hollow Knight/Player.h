@@ -12,9 +12,13 @@ public:
 	void Draw() const;
 	void HandleKeyDown(const SDL_KeyboardEvent& e);
 
-	
+	void ResetAnimations();
+
+	//getters & setters
 	Point2f GetCenterPos() const;
+	PlayerState GetState() const;
 	void SetIsOnGround(bool isOnGround);
+
 
 	//vars
 	Vector2f m_Velocity;
@@ -46,7 +50,8 @@ private:
 	void HandleKeyboardState();
 	void CalculateVelocity(float elapsedSec);
 	void MovePlayer(float elapsedSec);
-
+	void FlipImage() const;
+	void CheckFall();
 	//Getters & Setters
 	AnimationState CalculateAnimationState() const;
 };

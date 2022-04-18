@@ -5,10 +5,10 @@ using namespace utils;
 
 Player::Player(const Point2f& startPos, float width, float height)
 	:m_WalkSpeed{400},
-	m_JumpSpeed{12},
+	m_JumpSpeed{16},
 	m_TerminalVelocity{-400},
-	m_Gravity{0,-24},
-	m_AirControl{0.8f},
+	m_Gravity{0,-35},
+	m_AirControl{1},
 	m_ActionState{PlayerState::fall},
 	m_MoveDirState{MoveDirection::right},
 	m_LookDirState{LookDirection::right},
@@ -24,6 +24,7 @@ Player::Player(const Point2f& startPos, float width, float height)
 void Player::Update(float elapsedSec)
 {
 	HandleKeyboardState();
+	CheckFall();
 	CalculateVelocity(elapsedSec);
 	MovePlayer(elapsedSec);
 	UpdateAnimation(elapsedSec);
@@ -34,9 +35,23 @@ void Player::Draw() const
 {
 	Color4f red{ 1,0,0,1 };
 	SetColor(red);
-
-	DrawAnimation();
-	DrawRect(m_Hitbox);
+	switch (m_LookDirState)
+	{
+	case LookDirection::left:
+		DrawAnimation();
+		//DrawRect(m_Hitbox);
+		break;
+	case LookDirection::right:
+		glPushMatrix();
+		{
+			FlipImage();
+			DrawAnimation();
+			//DrawRect(m_Hitbox);
+		}
+		glPopMatrix();
+		break;
+	}
+	
 }
 
 AnimationState Player::CalculateAnimationState() const
@@ -154,13 +169,13 @@ void Player::HandleKeyboardState()
 	{
 		m_MoveDirState = MoveDirection::left;
 		m_LookDirState = LookDirection::left;
-		if (m_IsOnGround && m_ActionState != PlayerState::attack) m_ActionState = PlayerState::run;
+		if (m_IsOnGround) m_ActionState = PlayerState::run;
 	}
 	if (pStates[SDL_SCANCODE_D])
 	{
 		m_MoveDirState = MoveDirection::right;
 		m_LookDirState = LookDirection::right;
-		if (m_IsOnGround && m_ActionState != PlayerState::attack) m_ActionState = PlayerState::run;
+		if (m_IsOnGround) m_ActionState = PlayerState::run;
 	}
 	if (pStates[SDL_SCANCODE_W])
 	{
@@ -195,8 +210,33 @@ void Player::HandleKeyDown(const SDL_KeyboardEvent& e)
 		{
 			m_ActionState = PlayerState::jump;
 			m_Velocity.y = m_JumpSpeed;
+			m_Hitbox.bottom += 1;
 		}
 		break;
 	}
 }
 
+void Player::FlipImage() const
+{
+	glTranslatef(m_Hitbox.left * 2 + m_Hitbox.width, 0, 0);
+	glScalef(-1, 1, 1);
+}
+
+
+PlayerState Player::GetState() const
+{
+	return m_ActionState;
+}
+
+void Player::ResetAnimations()
+{
+	m_Animations.ResetAnim();
+}
+
+void Player::CheckFall()
+{
+	if (!m_IsOnGround && m_ActionState != PlayerState::jump)
+	{
+		m_ActionState = PlayerState::fall;
+	}
+}
