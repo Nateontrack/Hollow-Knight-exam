@@ -1,9 +1,7 @@
 #include "pch.h"
 #include "Game.h"
-#include "SVGParser.h"
 #include <string>
 #include <iostream>
-#include <fstream>
 
 Game::Game( const Window& window ) 
 	:m_Window{ window },
@@ -20,7 +18,8 @@ Game::~Game( )
 
 void Game::Initialize( )
 {
-	
+	m_Camera = Camera{ m_Window.width, m_Window.height };
+	m_Camera.SetLevelBoundaries(m_Level.GetBoundaries());
 }
 
 void Game::Cleanup( )
@@ -31,27 +30,29 @@ void Game::Cleanup( )
 
 void Game::Update( float elapsedSec )
 {
-	// Check keyboard state
-	//const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
-	//if ( pStates[SDL_SCANCODE_RIGHT] )
-	//{
-	//	std::cout << "Right arrow key is down\n";
-	//}
-	//if ( pStates[SDL_SCANCODE_LEFT] && pStates[SDL_SCANCODE_UP])
-	//{
-	//	std::cout << "Left and up arrow keys are down\n";
-	//}
+	PlayerState first{ m_Player->GetState() };
+
 	m_Player->SetIsOnGround(m_Level.IsOnGround(m_Player->m_Hitbox));
 	m_Player->Update(elapsedSec);
 	m_Level.HandleCollision(m_Player->m_Hitbox, m_Player->m_Velocity);
+	m_Level.Update(elapsedSec);
+
+	if (first != m_Player->GetState()) m_Player->ResetAnimations();
+	//resets animation if changed in state
 }
 
 void Game::Draw( ) const
 {
 	ClearBackground( );
-	m_Level.DrawBackground();
-	m_Player->Draw();
-	m_Level.DrawForeground();
+	glPushMatrix();
+	{
+		m_Camera.Transform(m_Player->m_Hitbox);
+		m_Level.DrawBackground();
+		m_Player->Draw();
+		m_Level.DrawForeground();
+		
+	}
+	glPopMatrix();
 }
 
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )

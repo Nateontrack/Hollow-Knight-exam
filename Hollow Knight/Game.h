@@ -2,6 +2,7 @@
 #include "GameObjectStates.h"
 #include "Level.h"
 #include "Player.h"
+#include "Camera.h"
 
 class Game final
 {
@@ -28,6 +29,7 @@ private:
 	const Window m_Window;
 	Level m_Level;
 	Player* m_Player;
+	Camera m_Camera;
 
 	// FUNCTIONS
 	void Initialize( );
