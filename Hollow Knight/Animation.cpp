@@ -16,11 +16,6 @@ Animation::Animation(Texture* pTexture, const Point2f& firstPos, int nrFrames, f
 	m_SrcRect.bottom = m_FirstPos.y;
 	m_SrcRect.width = m_FrameWidth;
 	m_SrcRect.height = m_FrameHeight;
-
-	m_DstRect.left = 0;
-	m_DstRect.bottom = 0;
-	m_DstRect.width = m_FrameWidth;
-	m_DstRect.height = m_FrameHeight;
 }
 
 Animation::~Animation()
@@ -46,12 +41,10 @@ void Animation::Update(float elapsedSec)
 		}
 		else if (m_CurrentFrame == m_NrFrames)
 		{
-			//switch state here
+			m_CurrentFrame--;
 		}
 
-		m_SrcRect.left = m_FrameWidth * m_CurrentFrame;
-		
-		
+		m_SrcRect.left = m_FirstPos.x + m_FrameWidth * m_CurrentFrame;
 	}	
 }
 

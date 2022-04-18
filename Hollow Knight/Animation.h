@@ -21,7 +21,6 @@ private:
 	const Point2f m_FirstPos;
 
 	Rectf m_SrcRect;
-	Rectf m_DstRect;
 	Texture* m_pTexture;
 
 	float m_AccumulatedTime;
