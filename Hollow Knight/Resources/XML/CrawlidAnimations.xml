@@ -1,0 +1,45 @@
+﻿<Spritesheet>
+	<Animation>
+		<id>1</id>
+		<firstPosX>0</firstPosX>
+		<firstPosY>294</firstPosY>
+		<nrFrames>4</nrFrames>
+		<width>116</width>
+		<height>85</height>
+		<isRepeating>1</isRepeating>
+		<repeatFrame>0</repeatFrame>
+	</Animation>
+
+	<Animation>
+		<id>9</id>
+		<firstPosX>0</firstPosX>
+		<firstPosY>210</firstPosY>
+		<nrFrames>2</nrFrames>
+		<width>96</width>
+		<height>83</height>
+		<isRepeating>0</isRepeating>
+		<repeatFrame>0</repeatFrame>
+	</Animation>
+
+	<Animation>
+		<id>7</id>
+		<firstPosX>0</firstPosX>
+		<firstPosY>91</firstPosY>
+		<nrFrames>3</nrFrames>
+		<width>117</width>
+		<height>120</height>
+		<isRepeating>0</isRepeating>
+		<repeatFrame>0</repeatFrame>
+	</Animation>
+
+	<Animation>
+		<id>8</id>
+		<firstPosX>0</firstPosX>
+		<firstPosY>0</firstPosY>
+		<nrFrames>2</nrFrames>
+		<width>128</width>
+		<height>90</height>
+		<isRepeating>0</isRepeating>
+		<repeatFrame>0</repeatFrame>
+	</Animation>
+</Spritesheet>
