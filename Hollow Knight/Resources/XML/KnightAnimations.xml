@@ -25,23 +25,23 @@
 	<Animation>
 		<id>2</id>
 		<firstPosX>0</firstPosX>
-		<firstPosY>131</firstPosY>
-		<nrFrames>13</nrFrames>
-		<width>86</width>
-		<height>130</height>
+		<firstPosY>261</firstPosY>
+		<nrFrames>12</nrFrames>
+		<width>103</width>
+		<height>146</height>
 		<isRepeating>1</isRepeating>
-		<repeatFrame>5</repeatFrame>
+		<repeatFrame>9</repeatFrame>
 	</Animation>
 
 	<Animation>
 		<id>3</id>
-		<firstPosX>0</firstPosX>
-		<firstPosY>131</firstPosY>
-		<nrFrames>13</nrFrames>
-		<width>86</width>
-		<height>130</height>
+		<firstPosX>618</firstPosX>
+		<firstPosY>261</firstPosY>
+		<nrFrames>6</nrFrames>
+		<width>103</width>
+		<height>146</height>
 		<isRepeating>1</isRepeating>
-		<repeatFrame>5</repeatFrame>
+		<repeatFrame>3</repeatFrame>
 	</Animation>
 
 	<Animation>
