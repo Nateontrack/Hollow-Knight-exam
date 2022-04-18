@@ -16,6 +16,9 @@
     <Filter Include="Game Files\Animation">
       <UniqueIdentifier>{f0dcab12-98b9-4d6e-bfd7-7ffad4e13729}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game Files\GameObjects">
+      <UniqueIdentifier>{0d222dce-b163-4390-b6df-3aa09ba87d95}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -66,6 +69,18 @@
     <ClCompile Include="Level.cpp">
       <Filter>Game Files</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>Game Files\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform.cpp">
+      <Filter>Game Files\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Crawlid.cpp">
+      <Filter>Game Files\GameObjects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core.h">
@@ -104,9 +119,6 @@
     <ClInclude Include="Player.h">
       <Filter>Game Files</Filter>
     </ClInclude>
-    <ClInclude Include="GameObjectStates.h">
-      <Filter>Game Files</Filter>
-    </ClInclude>
     <ClInclude Include="Animation.h">
       <Filter>Game Files\Animation</Filter>
     </ClInclude>
@@ -116,9 +128,27 @@
     <ClInclude Include="Level.h">
       <Filter>Game Files</Filter>
     </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Game Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>Game Files\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform.h">
+      <Filter>Game Files\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObjectStates.h">
+      <Filter>Game Files\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Crawlid.h">
+      <Filter>Game Files\GameObjects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Resources\XML\KnightAnimations.xml">
+      <Filter>Resource Files</Filter>
+    </Xml>
+    <Xml Include="Resources\XML\CrawlidAnimations.xml">
       <Filter>Resource Files</Filter>
     </Xml>
   </ItemGroup>

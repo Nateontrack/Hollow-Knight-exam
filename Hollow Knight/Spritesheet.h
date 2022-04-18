@@ -11,7 +11,7 @@ public:
 	void Update(AnimationState state, float elapsedSec);
 	void Draw(AnimationState state, const Point2f& centerPos) const;
 
-	void ResetAnim(AnimationState id);
+	void ResetAnim();
 	
 
 private:

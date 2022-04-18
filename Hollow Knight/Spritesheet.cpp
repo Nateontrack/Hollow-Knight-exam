@@ -18,11 +18,10 @@ Spritesheet::~Spritesheet()
 	delete m_pSprite;
 	m_pSprite = nullptr;
 
-	size_t nrAnimations{ m_pAnimations.size() };
-	for (size_t i = 0; i < nrAnimations; i++)
+	for (auto& it : m_pAnimations)
 	{
-		delete m_pAnimations.at((AnimationState)i);
-		m_pAnimations.at((AnimationState)i) = nullptr;
+		delete it.second;
+		it.second = nullptr;
 	}
 
 	m_pAnimations.clear();
@@ -39,9 +38,12 @@ void Spritesheet::Draw(AnimationState state, const Point2f& centerPos) const
 	m_pAnimations.at(state)->Draw(centerPos);
 }
 
-void Spritesheet::ResetAnim(AnimationState id)
+void Spritesheet::ResetAnim()
 {
-	m_pAnimations.at(id)->Reset();
+	for (auto& it : m_pAnimations )
+	{
+		it.second->Reset();
+	}
 }
 
 #pragma region AnimationLoading

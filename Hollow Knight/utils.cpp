@@ -290,6 +290,21 @@ float utils::GetDistance(const Point2f& p1, const Point2f& p2)
 	return GetDistance(p1.x, p1.y, p2.x, p2.y);
 }
 
+std::vector<Point2f> utils::GetVertices(const Rectf& rect)
+{
+	//bottomLeft: 0
+	//topLeft: 1
+	//topRight: 2
+	//bottomRight: 3
+	std::vector<Point2f> vertices{};
+	vertices.push_back(Point2f{ rect.left, rect.bottom });
+	vertices.push_back(Point2f{ rect.left, rect.bottom + rect.height });
+	vertices.push_back(Point2f{ rect.left + rect.width, rect.bottom + rect.height });
+	vertices.push_back(Point2f{ rect.left + rect.width, rect.bottom });
+
+	return vertices;
+}
+
 bool utils::IsPointInRect( const Point2f& p, const Rectf& r )
 {
 	return ( p.x >= r.left && 
