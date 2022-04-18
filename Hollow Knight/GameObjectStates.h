@@ -7,7 +7,10 @@ enum class AnimationState
 	fall,
 	attackHor,
 	attackUp,
-	attackDown
+	attackDown,
+	deathAir,
+	deathGround,
+	turn
 };
 
 enum class MoveDirection
@@ -32,4 +35,12 @@ enum class PlayerState
 	jump,
 	fall,
 	attack
+};
+
+enum class CrawlidState
+{
+	walk,
+	turn,
+	deadAir,
+	deadGround
 };
