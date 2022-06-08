@@ -149,6 +149,7 @@
     <ClCompile Include="Crawlid.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameObjectStates.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Matrix2x3.cpp" />
@@ -158,6 +159,7 @@
     <ClCompile Include="SoundEffect.cpp" />
     <ClCompile Include="SoundStream.cpp" />
     <ClCompile Include="Spritesheet.cpp" />
+    <ClCompile Include="StateHandler.cpp" />
     <ClCompile Include="structs.cpp" />
     <ClCompile Include="SVGParser.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -180,6 +182,7 @@
     <ClInclude Include="SoundEffect.h" />
     <ClInclude Include="SoundStream.h" />
     <ClInclude Include="Spritesheet.h" />
+    <ClInclude Include="StateHandler.h" />
     <ClInclude Include="structs.h" />
     <ClInclude Include="SVGParser.h" />
     <ClInclude Include="Texture.h" />

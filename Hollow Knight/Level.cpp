@@ -7,7 +7,7 @@ using namespace utils;
 
 Level::Level()
 	:m_pBackgroundTexture{new Texture{"Resources/Sprites/background.png"}},
-	m_pForegroundTexture{ new Texture{"Resources/Sprites/foreground.png"} },
+	m_pForegroundTexture{new Texture{"Resources/Sprites/foreground.png"}},
 	m_CollisionOffset{0.01f}
 {
 	InitLevelVerts();

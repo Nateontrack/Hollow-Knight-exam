@@ -81,6 +81,12 @@
     <ClCompile Include="Crawlid.cpp">
       <Filter>Game Files\GameObjects</Filter>
     </ClCompile>
+    <ClCompile Include="StateHandler.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObjectStates.cpp">
+      <Filter>Game Files\GameObjects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core.h">
@@ -142,6 +148,9 @@
     </ClInclude>
     <ClInclude Include="Crawlid.h">
       <Filter>Game Files\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="StateHandler.h">
+      <Filter>Game Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -6,7 +6,7 @@
 Game::Game( const Window& window ) 
 	:m_Window{ window },
 	m_Level{},
-	m_Player{ new Player{Point2f{m_Window.width / 2, 200}, 65, 125 } }
+	m_Player{ new Player{Point2f{m_Window.width / 2, 200}} }
 {
 	Initialize( );
 }
@@ -18,7 +18,7 @@ Game::~Game( )
 
 void Game::Initialize( )
 {
-	m_Camera = Camera{ m_Window.width, m_Window.height };
+	m_Camera = Camera{ m_Window.width, m_Window.height, m_Player->m_CollisionHitbox };
 	m_Camera.SetLevelBoundaries(m_Level.GetBoundaries());
 }
 
@@ -30,27 +30,26 @@ void Game::Cleanup( )
 
 void Game::Update( float elapsedSec )
 {
-	PlayerState first{ m_Player->GetState() };
+	MovementState first{ m_Player->GetState().action };
 
-	m_Player->SetIsOnGround(m_Level.IsOnGround(m_Player->m_Hitbox));
+	m_Player->SetIsOnGround(m_Level.IsOnGround(m_Player->m_CombatHitbox));
 	m_Player->Update(elapsedSec);
-	m_Level.HandleCollision(m_Player->m_Hitbox, m_Player->m_Velocity);
+	m_Level.HandleCollision(m_Player->m_CombatHitbox, m_Player->m_Velocity);
 	m_Level.Update(elapsedSec);
 
-	if (first != m_Player->GetState()) m_Player->ResetAnimations();
+	if (first != m_Player->GetState().action) m_Player->ResetAnimations();
 	//resets animation if changed in state
 }
 
-void Game::Draw( ) const
+void Game::Draw( )
 {
 	ClearBackground( );
 	glPushMatrix();
 	{
-		m_Camera.Transform(m_Player->m_Hitbox);
+		m_Camera.Transform(m_Player->m_CombatHitbox);
 		m_Level.DrawBackground();
 		m_Player->Draw();
 		m_Level.DrawForeground();
-		
 	}
 	glPopMatrix();
 }
@@ -58,7 +57,7 @@ void Game::Draw( ) const
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
 {
 	//std::cout << "KEYDOWN event: " << e.keysym.sym << std::endl;
-	m_Player->HandleKeyDown(e);
+	//m_Player->HandleKeyDown(e);
 }
 
 void Game::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )

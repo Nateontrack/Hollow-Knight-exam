@@ -28,7 +28,7 @@ enum class LookDirection
 	down
 };
 
-enum class PlayerState
+enum class MovementState
 {
 	idle,
 	run,
@@ -43,4 +43,16 @@ enum class CrawlidState
 	turn,
 	deadAir,
 	deadGround
+};
+
+struct PlayerStates
+{
+	PlayerStates();
+	explicit PlayerStates(MovementState movementState, MoveDirection moveDirection, LookDirection lookDirection, bool isAttack, bool isGround);
+
+	MovementState action;
+	MoveDirection moveDir;
+	LookDirection lookDir;
+	bool isOnGround;
+	bool isAttacking;
 };

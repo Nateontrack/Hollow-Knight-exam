@@ -10,7 +10,7 @@ Platform::Platform()
 Platform::Platform(const Point2f& bottomLeft)
 	:
 	m_pTexture{new Texture{"Resources/Sprites/platform01.png"} },
-	m_CollisionOffset{0.01f}
+	m_CollisionOffset{0.1f}
 {
 	m_Shape.left = bottomLeft.x;
 	m_Shape.bottom = bottomLeft.y;
@@ -37,6 +37,23 @@ void Platform::HandleCollision(Rectf& actorShape, Vector2f& actorVelocity)
 	Vector2f bottomOffset{ 0, actorShape.height / 2 }, topOffset{ 0, -actorShape.height / 2 },
 		leftOffset{ actorShape.width / 2,0 }, rightOffset{ -actorShape.width / 2,0 };
 	HitInfo info{};
+	
+	
+	//bottom
+	if (Raycast(m_PlatformVertices, bottomCenter, Point2f{ bottomCenter + bottomOffset }, info))
+	{
+		actorVelocity.y = 0;
+		actorShape.bottom = info.intersectPoint.y + m_CollisionOffset;
+	}
+
+	//top
+	else if (Raycast(m_PlatformVertices, actorVertices[1], Point2f{ actorVertices[1] + topOffset }, info))
+	{
+		actorVelocity.y = 0;
+		actorShape.bottom = info.intersectPoint.y - actorShape.height - m_CollisionOffset;
+	}
+
+	actorVertices = GetVertices(actorShape);
 
 	//left
 	if (Raycast(m_PlatformVertices, actorVertices[0], Point2f{ actorVertices[0] + leftOffset }, info) ||
@@ -48,30 +65,11 @@ void Platform::HandleCollision(Rectf& actorShape, Vector2f& actorVelocity)
 	}
 
 	//right
-    else if (Raycast(m_PlatformVertices, actorVertices[2], Point2f{ actorVertices[2] + rightOffset }, info) ||
+	else if (Raycast(m_PlatformVertices, actorVertices[2], Point2f{ actorVertices[2] + rightOffset }, info) ||
 		Raycast(m_PlatformVertices, actorVertices[3], Point2f{ actorVertices[3] + rightOffset }, info))
 	{
 		actorVelocity.x = 0;
 		actorShape.left = info.intersectPoint.x - actorShape.width - m_CollisionOffset;
-
-	}
-
-	actorVertices = GetVertices(actorShape);
-	
-	//bottom
-	if (Raycast(m_PlatformVertices, bottomCenter, Point2f{ bottomCenter + bottomOffset }, info))
-	{
-		actorVelocity.y = 0;
-		actorShape.bottom = info.intersectPoint.y + m_CollisionOffset;
-
-	}
-
-	//top
-	else if (Raycast(m_PlatformVertices, actorVertices[1], Point2f{ actorVertices[1] + topOffset }, info))
-	{
-		actorVelocity.y = 0;
-		actorShape.bottom = info.intersectPoint.y - actorShape.height - m_CollisionOffset;
-
 	}
 }
 

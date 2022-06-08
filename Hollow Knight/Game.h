@@ -15,7 +15,7 @@ public:
 	~Game();
 
 	void Update( float elapsedSec );
-	void Draw( ) const;
+	void Draw( );
 
 	// Event handling
 	void ProcessKeyDownEvent( const SDL_KeyboardEvent& e );
