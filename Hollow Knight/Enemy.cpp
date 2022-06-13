@@ -1,11 +1,26 @@
 #include "Enemy.h"
+#include "utils.h"
 
-Enemy::Enemy(const Rectf& hitbox, const Rectf& boundaries)
+using namespace utils;
+
+Enemy::Enemy(const Rectf& hitbox, const Rectf& boundaries, int health)
 	:m_Hitbox{hitbox},
+	m_Health{health},
 	m_Boundaries{boundaries},
 	m_Velocity{},
-	m_MoveDirState{MoveDirection::right}
+	m_MoveDirState{MoveDirection::right},
+	m_pHitAnimation{ new Spritesheet{"Resources/XML/HitAnimation.xml", "Resources/Sprites/HitAnimation.png"} },
+	m_HitTime{0.15f},
+	m_IsHit{false},
+	m_AccumulatedHitTime{0},
+	m_IsDead{false}
 {}
+
+Enemy::~Enemy()
+{
+	delete m_pHitAnimation;
+	m_pHitAnimation = nullptr;
+}
 
 Point2f Enemy::GetCenterPos() const
 {
@@ -45,4 +60,14 @@ bool Enemy::Clamp()
 	}
 
 	return hasClamped;
+}
+
+bool Enemy::CheckForHit(const Rectf& hitbox)
+{
+	return IsOverlapping(hitbox, m_Hitbox);
+}
+
+bool Enemy::GetIsDead()
+{
+	return m_IsDead;
 }

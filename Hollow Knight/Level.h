@@ -5,48 +5,57 @@
 #include "Vector2f.h"
 #include "Platform.h"
 #include "Crawlid.h"
+#include "Spike.h"
 
 class Level
 {
 public:
-	Level();
+	Level(const std::string& filePath, const Point2f& startPos);
 	~Level();
 
 	void Update(float elapsedSec);
-	void DrawBackground() const;
+	void DrawEntities() const;
 	void DrawForeground() const;
 	
 	void HandleCollision(Rectf& actorHitbox, Vector2f& actorVelocity);
+	void HandleAttack(const Rectf& attackRect);
+	bool CheckForHitSpikes(const Rectf& actorHitbox) const;
+	bool CheckForHitEnemies(const Rectf& actorHitbox) const;
 	bool IsOnGround(const Rectf& actorHitbox) const;
 	
-
-
 	Rectf GetBoundaries() const;
 private:
 	std::vector<std::vector <Point2f>> m_Vertices;
 	std::vector<Platform*> m_pPlatforms;
 	std::vector<Enemy*> m_pEnemies;
-	Texture* m_pBackgroundTexture;
-	Texture* m_pForegroundTexture;
+	std::vector<Spike*> m_pSpikes;
 	Rectf m_Boundaries;
 
 	const float m_CollisionOffset;
+	Point2f m_RespawnPos;
 
-	//debug
-	
-
+	//functions
 	void InitLevelVerts();
 	void InitLevelBoundaries();
-	void InitPlatforms();
-	void InitEnemies();
 	void CleanUp();
 
 	void HandleCollisionLevel(Rectf& actorHitbox, Vector2f& actorVelocity);
 	void HandleCollisionPlatforms(Rectf& actorHitbox, Vector2f& actorVelocity);
+	
 	bool IsOnGroundLevel(const Rectf& actorHitbox) const;
 	bool IsOnGroundPlatforms(const Rectf& actorHitbox) const;
 	void DrawPlatforms() const;
 	void UpdateEnemies(float elapsedSec);
 	void DrawEnemies() const;
+	void DrawDebugRectsSpikes() const;
+	
+
+	//parsing
+	void LoadGameObjectDataFromFile(const std::string& filePath);
+	void LoadGameObjectFromString(const std::string& gameObjects);
+	void CreateGameObject(const std::string& gameObjectData);
+	void CreateSpike(const std::string& spikeData);
+	void CreatePlatform(const std::string& platformData);
+	void CreateCrawlid(const std::string& crawlidData);
 };
 

@@ -6,12 +6,14 @@
 class Crawlid final : public Enemy
 {
 public:
-	Crawlid(const Rectf& hitbox, const Rectf& boundaries, const std::string& XMLFilePath, const std::string& srcImagePath);
+	Crawlid(const Rectf& boundaries);
 	virtual ~Crawlid() override final;
 
 	virtual void Draw() const override final;
 	virtual void Update(float elapsedSec) override final;
-	virtual void HandleCollision(const Rectf& actorHitbox) override final;
+	/*virtual bool HandleCollision(const Rectf& actorHitbox) override final;*/
+
+	virtual void HitEnemy() override final;
 private:
 	CrawlidState m_ActionState;
 	Spritesheet* m_pAnimations;
@@ -27,5 +29,7 @@ private:
 	void UpdatePos(float elapsedSec);
 	virtual AnimationState CalculateAnimationState() const override final;
 	virtual void HandleState(float elapsedSec) override final;
+	void HandleHit(float elapsedSec);
+	void DrawAnimations() const;
 };
 

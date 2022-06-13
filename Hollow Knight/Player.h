@@ -12,22 +12,25 @@ public:
 	
 	void Update(float elapsedSec);
 	void Draw() const;
-	//void HandleKeyDown(const SDL_KeyboardEvent& e);
+	void HandleKeyDown(const SDL_KeyboardEvent& e);
+	void HandleKeyUp(const SDL_KeyboardEvent& e);
+	bool ExecuteAttack();
 
-	void ResetAnimations();
+	void ResetAnimations(bool isAttackingAnim);
+	void HitPlayer(bool hitBySpike);
 
 	//getters & setters
 	Point2f GetCenterPos() const;
 	PlayerStates GetState() const;
+	CollisionFunc& GetCollisionFunc();
 	void SetIsOnGround(bool isOnGround);
 
-
-	//vars
-	Vector2f m_Velocity;
-	Rectf m_CombatHitbox;
-	Rectf m_CollisionHitbox;
-
 private:
+	//player stats
+	int m_MaxHealth;
+	int m_Health;
+	int m_Coins;
+
 	//states
 	PlayerStates m_PlayerStates;
 	LookDirection m_LookDirHor;
@@ -41,6 +44,11 @@ private:
 	const Vector2f m_Gravity;
 
 	float m_HitboxDif;
+
+	//Hitboxes
+	Vector2f m_AttackOffset;
+	CollisionFunc m_Collision;
+
 	//animation
 	Spritesheet m_Animations;
 
@@ -59,11 +67,16 @@ private:
 
 	//Getters & Setters
 	AnimationState CalculateAnimationState() const;
+	AnimationState CalculateEffectAnimation() const;
+	Rectf CalculateAttackHitbox() const;
 
 	//Initialization
-	void InitializeHitboxes(const Point2f& startPos);
+	void InitializeCollision(const Point2f& startPos);
 
 	//debugging
 	void DrawHitboxes() const;
-};
 
+	//respawning
+	void SoftRespawn();
+	void HardRespawn();
+};

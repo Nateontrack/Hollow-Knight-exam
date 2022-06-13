@@ -2,9 +2,9 @@
 #include "utils.h"
 using namespace utils;
 
-Crawlid::Crawlid(const Rectf& hitbox, const Rectf& boundaries, const std::string& XMLFilePath, const std::string& srcImagePath)
-	:Enemy(hitbox, boundaries),
-	m_pAnimations{new Spritesheet{XMLFilePath, srcImagePath}},
+Crawlid::Crawlid(const Rectf& boundaries)
+	:Enemy(Rectf{ boundaries.left,boundaries.bottom,110,80 }, boundaries, 2),
+	m_pAnimations{new Spritesheet{"Resources/XML/CrawlidAnimations.xml", "Resources/Sprites/Crawlidsheet.png"}},
 	m_ActionState{CrawlidState::walk},
 	m_deathAirTime{0.25f},
 	m_TurnTime{0.1667f},
@@ -21,12 +21,13 @@ Crawlid::~Crawlid()
 void Crawlid::Update(float elapsedSec)
 {
 	HandleState(elapsedSec);
+	HandleHit(elapsedSec);
 	CalculateVelocity();
 	UpdatePos(elapsedSec);
 	if (Clamp())
 	{
 		m_ActionState = CrawlidState::turn;
-		m_pAnimations->ResetAnim();
+		m_pAnimations->ResetAnim(false);
 		if (m_MoveDirState == MoveDirection::left)
 		{
 			m_MoveDirState = MoveDirection::right;
@@ -49,14 +50,14 @@ void Crawlid::Draw() const
 	if (m_MoveDirState == MoveDirection::left && m_ActionState != CrawlidState::turn
 		|| m_MoveDirState == MoveDirection::right && m_ActionState == CrawlidState::turn)
 	{
-		m_pAnimations->Draw(CalculateAnimationState(), GetCenterPos());
+		DrawAnimations();
 		//DrawRect(m_Hitbox);
 	}
 	else
 	{
 		glPushMatrix();
 		FlipImage();
-		m_pAnimations->Draw(CalculateAnimationState(), GetCenterPos());
+		DrawAnimations();
 		//DrawRect(m_Hitbox);
 		
 		glPopMatrix();
@@ -137,11 +138,59 @@ void Crawlid::FlipImage() const
 	glScalef(-1, 1, 1);
 }
 
-void Crawlid::HandleCollision(const Rectf& actorHitbox)
+//bool Crawlid::HandleCollision(const Rectf& actorHitbox)
+//{
+//	if (m_ActionState != CrawlidState::deadGround)
+//	{
+//		if (IsOverlapping(m_Hitbox, actorHitbox))
+//		{
+//			return true;
+//		}
+//	}
+//	return false;
+//}
+
+void Crawlid::HitEnemy()
 {
-	if (IsOverlapping(m_Hitbox, actorHitbox))
+	if (m_ActionState != CrawlidState::deadGround)
 	{
-		m_ActionState = CrawlidState::deadAir;
-		m_MoveDirState = MoveDirection::none;
+		--m_Health;
+		if (m_Health <= 0)
+		{
+			m_ActionState = CrawlidState::deadAir;
+			m_MoveDirState = MoveDirection::none;
+			m_IsDead = true;
+			m_AccumulatedTime = 0;
+		}
+		m_IsHit = true;
+	}
+}
+
+void Crawlid::HandleHit(float elapsedSec)
+{
+	if (m_IsHit)
+	{
+		m_AccumulatedHitTime += elapsedSec;
+		if (m_AccumulatedHitTime > m_HitTime)
+		{
+			m_IsHit = false;
+			m_AccumulatedHitTime = 0;
+			m_pHitAnimation->ResetAnim(true);
+		}
+		else
+		{
+			m_pHitAnimation->Update(AnimationState::hit, elapsedSec);
+		}
+	}
+}
+
+void Crawlid::DrawAnimations() const
+{
+	Point2f centerPos{ GetCenterPos() };
+	m_pAnimations->Draw(CalculateAnimationState(), centerPos);
+
+	if (m_IsHit)
+	{
+		m_pHitAnimation->Draw(AnimationState::hit, centerPos);
 	}
 }

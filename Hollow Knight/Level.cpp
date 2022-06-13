@@ -2,18 +2,18 @@
 #include "utils.h"
 #include "SVGParser.h"
 #include <iostream>
+#include <string>
+#include <fstream>
 
 using namespace utils;
 
-Level::Level()
-	:m_pBackgroundTexture{new Texture{"Resources/Sprites/background.png"}},
-	m_pForegroundTexture{new Texture{"Resources/Sprites/foreground.png"}},
-	m_CollisionOffset{0.01f}
+Level::Level(const std::string& filePath, const Point2f& startPos)
+	:m_CollisionOffset{0.01f},
+	m_RespawnPos{startPos}
 {
 	InitLevelVerts();
 	InitLevelBoundaries();
-	InitPlatforms();
-	InitEnemies();
+	LoadGameObjectDataFromFile(filePath);
 }
 
 Level::~Level()
@@ -23,16 +23,9 @@ Level::~Level()
 
 void Level::InitLevelVerts()
 {
-	//m_Vertices.push_back(std::vector<Point2f> {});
 	if (!SVGParser::GetVerticesFromSvgFile("Resources/XML/LevelVertices.svg", m_Vertices))
 	{
 		std::cout << "Level vertices loading failed\n";
-	}
-	int i{};
-	for (Point2f it : m_Vertices[0])
-	{
-		std::cout << "Point " << i << " : " << it.x << ", " << it.y << '\n';
-		i++;
 	}
 }
 
@@ -40,45 +33,37 @@ void Level::InitLevelBoundaries()
 {
 	m_Boundaries.left = 0;
 	m_Boundaries.bottom = 0;
-	m_Boundaries.width = m_pBackgroundTexture->GetWidth();
-	m_Boundaries.height = m_pBackgroundTexture->GetHeight();
+	m_Boundaries.width = 2581;
+	m_Boundaries.height = 1665;
 }
 
-void Level::InitPlatforms()
+void Level::DrawEntities() const
 {
-	m_pPlatforms.push_back(new Platform{ Point2f{669, 300} });
-	m_pPlatforms.push_back(new Platform{ Point2f{970, 430} });
-	m_pPlatforms.push_back(new Platform{ Point2f{2003,789} });
-	m_pPlatforms.push_back(new Platform{ Point2f{2276,891} });
-}
-
-void Level::InitEnemies()
-{
-	Rectf boundaries{1210,591,500,200};
-	Rectf hitbox{ 1210,591,110,80 };
-	m_pEnemies.push_back(new Crawlid{ hitbox, boundaries, "Resources/XML/CrawlidAnimations.xml", "Resources/Sprites/Crawlidsheet.png" });
-}
-
-void Level::DrawBackground() const
-{
-	m_pBackgroundTexture->Draw(Point2f{ 0,0 });
+	DrawEnemies();
 }
 
 void Level::DrawForeground() const
 {
-	m_pForegroundTexture->Draw(Point2f{0,0});
-	DrawEnemies();
 	DrawPlatforms();
+	DrawDebugRectsSpikes();
 }
 
 void Level::HandleCollision(Rectf& actorHitbox, Vector2f& actorVelocity)
 {
 	HandleCollisionLevel(actorHitbox, actorVelocity);
 	HandleCollisionPlatforms(actorHitbox, actorVelocity);
+}
+
+bool Level::CheckForHitEnemies(const Rectf& actorHitbox) const
+{
 	for (Enemy* it : m_pEnemies)
 	{
-		it->HandleCollision(actorHitbox);
+		if (!it->GetIsDead())
+		{
+			if (it->CheckForHit(actorHitbox)) return true;
+		}
 	}
+	return false;
 }
 
 void Level::HandleCollisionLevel(Rectf& actorHitbox, Vector2f& actorVelocity)
@@ -131,6 +116,18 @@ void Level::HandleCollisionPlatforms(Rectf& actorHitbox, Vector2f& actorVelocity
 	}
 }
 
+bool Level::CheckForHitSpikes(const Rectf& actorHitbox) const
+{
+	for (Spike* it : m_pSpikes)
+	{
+		if (it->CheckForHit(actorHitbox))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 bool Level::IsOnGround(const Rectf& actorHitbox) const
 {
 	if (IsOnGroundLevel(actorHitbox) || IsOnGroundPlatforms(actorHitbox))
@@ -171,11 +168,6 @@ Rectf Level::GetBoundaries() const
 
 void Level::CleanUp()
 {
-	delete m_pBackgroundTexture;
-	delete m_pForegroundTexture;
-	m_pBackgroundTexture = nullptr;
-	m_pForegroundTexture = nullptr;
-
 	for (Platform* it : m_pPlatforms)
 	{
 		delete it;
@@ -189,6 +181,13 @@ void Level::CleanUp()
 		it = nullptr;
 	}
 	m_pEnemies.clear();
+
+	for (Spike* it : m_pSpikes)
+	{
+		delete it;
+		it = nullptr;
+	}
+	m_pSpikes.clear();
 }
 
 void Level::DrawPlatforms() const
@@ -219,3 +218,127 @@ void Level::Update(float elapsedSec)
 {
 	UpdateEnemies(elapsedSec);
 }
+
+void Level::DrawDebugRectsSpikes() const
+{
+	for (Spike* it : m_pSpikes)
+	{
+		it->DrawHitbox();
+	}
+}
+
+void Level::HandleAttack(const Rectf& attackRect)
+{
+	for (Enemy* pEnemy : m_pEnemies)
+	{
+		if (pEnemy->CheckForHit(attackRect))
+		{
+			pEnemy->HitEnemy();
+		}
+	}
+}
+
+#pragma region parsing
+void Level::LoadGameObjectDataFromFile(const std::string& filePath)
+{
+	//reads between <Layer> & </Layer>, passes this to creation
+	std::ifstream ifs{ filePath };
+	if (!ifs.good())
+	{
+		std::cout << filePath << " failed to load\n";
+		return;
+	}
+
+	std::string gameObjects{};
+	std::string currentLine{};
+	bool isCompleted{ false };
+
+	while (std::getline(ifs, currentLine, '\n') || !isCompleted)
+	{
+		gameObjects += currentLine;
+
+		if (currentLine == "</GameObjects>")
+		{
+			isCompleted = true;
+		}
+	}
+
+	if (isCompleted)
+	{
+		LoadGameObjectFromString(gameObjects);
+	}
+	else
+	{
+		std::cout << "no gameObjects found in " << filePath << '\n';
+	}
+}
+
+void Level::LoadGameObjectFromString(const std::string& gameObjects)
+{
+	std::string objects{ GetAttributeValue("GameObjects", gameObjects) };
+
+	bool hasCreatedAllObjects{ false };
+
+	while (!hasCreatedAllObjects)
+	{
+		std::string currentObject{ GetAttributeValue("GameObject", objects) };
+
+		if (currentObject == "")
+		{
+			hasCreatedAllObjects = true;
+			break;
+		}
+
+		CreateGameObject(currentObject);
+		DeleteAttribute("GameObject", objects);
+	}
+}
+
+void Level::CreateGameObject(const std::string& gameObjectData)
+{
+	GameObjectType id{ static_cast<GameObjectType>(std::stoi(GetAttributeValue("ID", gameObjectData))) };
+	switch (id)
+	{
+	case GameObjectType::Platform:
+		CreatePlatform(gameObjectData);
+		break;
+	case GameObjectType::Spike:
+		CreateSpike(gameObjectData);
+		break;
+	case GameObjectType::Crawlid:
+		CreateCrawlid(gameObjectData);
+		break;
+	}
+}
+
+void Level::CreateSpike(const std::string& spikeData)
+{
+	Rectf hitbox{};
+	hitbox.left = std::stof(GetAttributeValue("PosX", spikeData));
+	hitbox.bottom = std::stof(GetAttributeValue("PosY", spikeData));
+	hitbox.width = std::stof(GetAttributeValue("Width", spikeData));
+	hitbox.height = std::stof(GetAttributeValue("Height", spikeData));
+
+	m_pSpikes.push_back(new Spike{ hitbox });
+}
+
+void Level::CreatePlatform(const std::string& platformData)
+{
+	Point2f pos{};
+	pos.x = std::stof(GetAttributeValue("PosX", platformData));
+	pos.y = std::stof(GetAttributeValue("PosY", platformData));
+
+	m_pPlatforms.push_back(new Platform{ pos });
+}
+
+void Level::CreateCrawlid(const std::string& crawlidData)
+{
+	Rectf boundaries{};
+	boundaries.left = std::stof(GetAttributeValue("PosX", crawlidData));
+	boundaries.bottom = std::stof(GetAttributeValue("PosY", crawlidData));
+	boundaries.width = std::stof(GetAttributeValue("Width", crawlidData));
+	boundaries.height = std::stof(GetAttributeValue("Height", crawlidData));
+
+	m_pEnemies.push_back(new Crawlid{ boundaries });
+}
+#pragma endregion parsing

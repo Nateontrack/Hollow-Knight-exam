@@ -1,16 +1,37 @@
 #include "Animation.h"
+#include <iostream>
 
-Animation::Animation(Texture* pTexture, const Point2f& firstPos, int nrFrames, float width, float height, bool isRepeating, int repeatFrame)
+Animation::Animation(Texture* pTexture, const Point2f& firstPos, int nrFrames, float width, float height, bool isAttackAnim, bool isRepeating, int repeatFrame)
 	:m_FirstPos{firstPos},
 	m_NrFrames{nrFrames},
 	m_FrameWidth{width},
 	m_FrameHeight{height},
 	m_IsRepeating{isRepeating},
 	m_RepeatFrame{repeatFrame},
-	m_FrameTime{0.0833f},
+	m_FrameTime{0.083333f},
 	m_CurrentFrame{0},
 	m_AccumulatedTime{},
-	m_pTexture{pTexture}
+	m_pTexture{pTexture},
+	m_IsAttackAnim{isAttackAnim}
+{
+	m_SrcRect.left = m_FirstPos.x;
+	m_SrcRect.bottom = m_FirstPos.y;
+	m_SrcRect.width = m_FrameWidth;
+	m_SrcRect.height = m_FrameHeight;
+}
+
+Animation::Animation(Texture* pTexture, const Point2f& firstPos, int nrFrames, float width, float height, bool isAttackAnim, float frameTime, bool isRepeating, int repeatFrame)
+	:m_FirstPos{ firstPos },
+	m_NrFrames{ nrFrames },
+	m_FrameWidth{ width },
+	m_FrameHeight{ height },
+	m_IsRepeating{ isRepeating },
+	m_RepeatFrame{ repeatFrame },
+	m_FrameTime{ frameTime },
+	m_CurrentFrame{ 0 },
+	m_AccumulatedTime{},
+	m_pTexture{ pTexture },
+	m_IsAttackAnim{ isAttackAnim }
 {
 	m_SrcRect.left = m_FirstPos.x;
 	m_SrcRect.bottom = m_FirstPos.y;
@@ -58,4 +79,9 @@ void Animation::Reset()
 {
 	m_CurrentFrame = 0;
 	m_AccumulatedTime = 0;
+}
+
+bool Animation::GetIsAttackAnim()
+{
+	return m_IsAttackAnim;
 }
