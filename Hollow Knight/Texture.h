@@ -3,6 +3,8 @@
 #include <SDL_video.h>
 #include <SDL_ttf.h>
 #include <SDL_opengl.h>
+#include <string>
+#include "structs.h"
 
 	
 class Texture final
