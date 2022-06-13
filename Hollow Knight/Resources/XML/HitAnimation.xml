@@ -1,0 +1,14 @@
+<Spritesheet>
+	<Animation>
+		<id>11</id>
+		<firstPosX>0</firstPosX>
+		<firstPosY>0</firstPosY>
+		<nrFrames>3</nrFrames>
+		<width>94</width>
+		<height>313</height>
+		<isRepeating>0</isRepeating>
+		<repeatFrame>0</repeatFrame>
+		<isAttackAnim>1</isAttackAnim>
+		<frameTime>0.05</frameTime>
+	</Animation>
+</Spritesheet>

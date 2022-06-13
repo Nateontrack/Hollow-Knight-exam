@@ -8,10 +8,12 @@
 		<height>85</height>
 		<isRepeating>1</isRepeating>
 		<repeatFrame>0</repeatFrame>
+		<isAttackAnim>0</isAttackAnim>
+		<frameTime>default</frameTime>
 	</Animation>
 
 	<Animation>
-		<id>9</id>
+		<id>10</id>
 		<firstPosX>0</firstPosX>
 		<firstPosY>210</firstPosY>
 		<nrFrames>2</nrFrames>
@@ -19,10 +21,12 @@
 		<height>83</height>
 		<isRepeating>0</isRepeating>
 		<repeatFrame>0</repeatFrame>
+		<isAttackAnim>0</isAttackAnim>
+		<frameTime>default</frameTime>
 	</Animation>
 
 	<Animation>
-		<id>7</id>
+		<id>8</id>
 		<firstPosX>0</firstPosX>
 		<firstPosY>91</firstPosY>
 		<nrFrames>3</nrFrames>
@@ -30,10 +34,12 @@
 		<height>120</height>
 		<isRepeating>0</isRepeating>
 		<repeatFrame>0</repeatFrame>
+		<isAttackAnim>0</isAttackAnim>
+		<frameTime>default</frameTime>
 	</Animation>
 
 	<Animation>
-		<id>8</id>
+		<id>9</id>
 		<firstPosX>0</firstPosX>
 		<firstPosY>0</firstPosY>
 		<nrFrames>2</nrFrames>
@@ -41,5 +47,7 @@
 		<height>90</height>
 		<isRepeating>0</isRepeating>
 		<repeatFrame>0</repeatFrame>
+		<isAttackAnim>0</isAttackAnim>
+		<frameTime>default</frameTime>
 	</Animation>
 </Spritesheet>
