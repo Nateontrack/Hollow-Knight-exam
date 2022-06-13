@@ -735,3 +735,16 @@ void utils::DeleteAttribute(const std::string& attribute, std::string& srcString
 }
 
 #pragma endregion Parsing
+
+#pragma region Math
+
+Point2f utils::Lerp(const Point2f& first, const Point2f& second, float percentage)
+{
+	//interpolates from first towards second
+	Point2f lerpedPoint{};
+	lerpedPoint.x = first.x + (second.x - first.x) * percentage;
+	lerpedPoint.y = first.y + (second.y - first.y) * percentage;
+	return lerpedPoint;
+}
+
+#pragma endregion Math

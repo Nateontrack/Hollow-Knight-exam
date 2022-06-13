@@ -88,6 +88,12 @@ namespace utils
 
 	std::string GetAttributeValue(const std::string& attribute, const std::string& srcString);
 	void DeleteAttribute(const std::string& attribute, std::string& srcString);
+
 #pragma endregion Parsing
 
+#pragma region Math
+
+	Point2f Lerp(const Point2f& first, const Point2f& second, float percentage);
+
+#pragma endregion Math
 }
