@@ -19,6 +19,9 @@
     <Filter Include="Game Files\GameObjects">
       <UniqueIdentifier>{0d222dce-b163-4390-b6df-3aa09ba87d95}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game Files\Camera">
+      <UniqueIdentifier>{8e7f7020-3d51-4fed-a3d9-6213e42c97c5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -69,9 +72,6 @@
     <ClCompile Include="Level.cpp">
       <Filter>Game Files</Filter>
     </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Game Files</Filter>
-    </ClCompile>
     <ClCompile Include="Enemy.cpp">
       <Filter>Game Files\GameObjects</Filter>
     </ClCompile>
@@ -85,6 +85,15 @@
       <Filter>Game Files</Filter>
     </ClCompile>
     <ClCompile Include="GameObjectStates.cpp">
+      <Filter>Game Files\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Game Files\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="ParallaxManager.cpp">
+      <Filter>Game Files\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Spike.cpp">
       <Filter>Game Files\GameObjects</Filter>
     </ClCompile>
   </ItemGroup>
@@ -134,9 +143,6 @@
     <ClInclude Include="Level.h">
       <Filter>Game Files</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Game Files</Filter>
-    </ClInclude>
     <ClInclude Include="Enemy.h">
       <Filter>Game Files\GameObjects</Filter>
     </ClInclude>
@@ -152,12 +158,30 @@
     <ClInclude Include="StateHandler.h">
       <Filter>Game Files</Filter>
     </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Game Files\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="ParallaxManager.h">
+      <Filter>Game Files\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Spike.h">
+      <Filter>Game Files\GameObjects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Resources\XML\KnightAnimations.xml">
       <Filter>Resource Files</Filter>
     </Xml>
+    <Xml Include="Resources\XML\GameObjects.xml">
+      <Filter>Resource Files</Filter>
+    </Xml>
+    <Xml Include="Resources\XML\ParallaxData.xml">
+      <Filter>Resource Files</Filter>
+    </Xml>
     <Xml Include="Resources\XML\CrawlidAnimations.xml">
+      <Filter>Resource Files</Filter>
+    </Xml>
+    <Xml Include="HitAnimation.xml">
       <Filter>Resource Files</Filter>
     </Xml>
   </ItemGroup>

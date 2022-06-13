@@ -5,8 +5,10 @@
 
 Game::Game( const Window& window ) 
 	:m_Window{ window },
-	m_Level{},
-	m_Player{ new Player{Point2f{m_Window.width / 2, 200}} }
+	m_Level{ "Resources/XML/GameObjects.xml", Point2f{window.width / 2, 200} },
+	m_StartPosPlayer{window.width / 2, 200},
+	m_ParallaxManager{"Resources/XML/ParallaxData.xml"},
+	m_WindowScaleFactor{2.f / 3.f}
 {
 	Initialize( );
 }
@@ -18,7 +20,8 @@ Game::~Game( )
 
 void Game::Initialize( )
 {
-	m_Camera = Camera{ m_Window.width, m_Window.height, m_Player->m_CollisionHitbox };
+	m_Player = new Player{ m_StartPosPlayer };
+	m_Camera = Camera{ m_Window.width, m_Window.height, m_WindowScaleFactor, m_Player->GetCollisionFunc().combatHitbox};
 	m_Camera.SetLevelBoundaries(m_Level.GetBoundaries());
 }
 
@@ -30,14 +33,17 @@ void Game::Cleanup( )
 
 void Game::Update( float elapsedSec )
 {
-	MovementState first{ m_Player->GetState().action };
+	PlayerStates first{ m_Player->GetState()};
 
-	m_Player->SetIsOnGround(m_Level.IsOnGround(m_Player->m_CombatHitbox));
+	m_Player->SetIsOnGround(m_Level.IsOnGround(m_Player->GetCollisionFunc().combatHitbox));
 	m_Player->Update(elapsedSec);
-	m_Level.HandleCollision(m_Player->m_CombatHitbox, m_Player->m_Velocity);
+	m_Level.HandleCollision(m_Player->GetCollisionFunc().combatHitbox, m_Player->GetCollisionFunc().velocity);
+	HandlePlayerHit();
 	m_Level.Update(elapsedSec);
+	m_Camera.Update(m_Player->GetCollisionFunc().combatHitbox, elapsedSec);
+	m_ParallaxManager.Update(m_Camera.GetLastCameraTransform());
 
-	if (first != m_Player->GetState().action) m_Player->ResetAnimations();
+	ResetKnightAnimations(first);
 	//resets animation if changed in state
 }
 
@@ -46,9 +52,12 @@ void Game::Draw( )
 	ClearBackground( );
 	glPushMatrix();
 	{
-		m_Camera.Transform(m_Player->m_CombatHitbox);
-		m_Level.DrawBackground();
+		glScalef(m_WindowScaleFactor, m_WindowScaleFactor, 1); // 2 thirds for 720p
+		m_Camera.Transform();
+		m_ParallaxManager.DrawBackground();
+		m_Level.DrawEntities();
 		m_Player->Draw();
+		m_ParallaxManager.DrawForeground();
 		m_Level.DrawForeground();
 	}
 	glPopMatrix();
@@ -56,20 +65,12 @@ void Game::Draw( )
 
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
 {
-	//std::cout << "KEYDOWN event: " << e.keysym.sym << std::endl;
-	//m_Player->HandleKeyDown(e);
+	m_Player->HandleKeyDown(e);
 }
 
 void Game::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )
 {
-	//std::cout << "KEYUP event: " << e.keysym.sym << std::endl;
-	/*switch ( e.keysym.sym )
-	{
-	case SDLK_KP_0:
-		break;
-	case SDLK_KP_1:
-		break;
-	}*/
+	m_Player->HandleKeyUp(e);
 }
 
 void Game::ProcessMouseMotionEvent( const SDL_MouseMotionEvent& e )
@@ -79,19 +80,16 @@ void Game::ProcessMouseMotionEvent( const SDL_MouseMotionEvent& e )
 
 void Game::ProcessMouseDownEvent( const SDL_MouseButtonEvent& e )
 {
-	//std::cout << "MOUSEBUTTONDOWN event: ";
-	//switch ( e.button )
-	//{
-	//case SDL_BUTTON_LEFT:
-	//	std::cout << " left button " << std::endl;
-	//	break;
-	//case SDL_BUTTON_RIGHT:
-	//	std::cout << " right button " << std::endl;
-	//	break;
-	//case SDL_BUTTON_MIDDLE:
-	//	std::cout << " middle button " << std::endl;
-	//	break;
-	//}
+	switch (e.button)
+	{
+	case SDL_BUTTON_LEFT:
+		if (m_Player->ExecuteAttack())
+		{
+			m_Level.HandleAttack(m_Player->GetCollisionFunc().attackHitbox);
+		}
+		break;
+	}
+	
 }
 
 void Game::ProcessMouseUpEvent( const SDL_MouseButtonEvent& e )
@@ -115,4 +113,28 @@ void Game::ClearBackground( ) const
 {
 	glClearColor( 0.5f, 0.5f, 0.5f, 1.0f );
 	glClear( GL_COLOR_BUFFER_BIT );
+}
+
+void Game::ResetKnightAnimations(const PlayerStates& previousState)
+{
+	if (previousState.action != m_Player->GetState().action)
+	{
+		m_Player->ResetAnimations(false);
+	}
+	if (previousState.isAttacking != m_Player->GetState().isAttacking)
+	{
+		m_Player->ResetAnimations(true);
+	}
+}
+
+void Game::HandlePlayerHit()
+{
+	if (m_Level.CheckForHitSpikes(m_Player->GetCollisionFunc().combatHitbox))
+	{
+		m_Player->HitPlayer(true);
+	}
+	else if (m_Level.CheckForHitEnemies(m_Player->GetCollisionFunc().combatHitbox))
+	{
+		m_Player->HitPlayer(false);
+	}
 }

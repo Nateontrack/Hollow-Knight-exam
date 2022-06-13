@@ -3,6 +3,7 @@
 #include "Level.h"
 #include "Player.h"
 #include "Camera.h"
+#include "ParallaxManager.h"
 
 class Game final
 {
@@ -30,9 +31,14 @@ private:
 	Level m_Level;
 	Player* m_Player;
 	Camera m_Camera;
+	ParallaxManager m_ParallaxManager;
 
+	Point2f m_StartPosPlayer;
+	const float m_WindowScaleFactor;
 	// FUNCTIONS
 	void Initialize( );
 	void Cleanup( );
 	void ClearBackground( ) const;
+	void ResetKnightAnimations(const PlayerStates& previousState);
+	void HandlePlayerHit();
 };

@@ -153,11 +153,13 @@
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Matrix2x3.cpp" />
+    <ClCompile Include="ParallaxManager.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SoundEffect.cpp" />
     <ClCompile Include="SoundStream.cpp" />
+    <ClCompile Include="Spike.cpp" />
     <ClCompile Include="Spritesheet.cpp" />
     <ClCompile Include="StateHandler.cpp" />
     <ClCompile Include="structs.cpp" />
@@ -176,11 +178,13 @@
     <ClInclude Include="GameObjectStates.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="Matrix2x3.h" />
+    <ClInclude Include="ParallaxManager.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="SoundEffect.h" />
     <ClInclude Include="SoundStream.h" />
+    <ClInclude Include="Spike.h" />
     <ClInclude Include="Spritesheet.h" />
     <ClInclude Include="StateHandler.h" />
     <ClInclude Include="structs.h" />
@@ -191,7 +195,10 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Resources\XML\CrawlidAnimations.xml" />
+    <Xml Include="Resources\XML\GameObjects.xml" />
     <Xml Include="Resources\XML\KnightAnimations.xml" />
+    <Xml Include="Resources\XML\ParallaxData.xml" />
+    <Xml Include="HitAnimation.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
