@@ -6,16 +6,20 @@ StateHandler::StateHandler(PlayerStates startStates)
 	:m_PreviousStates{ startStates },
 	m_AccumulatedTime{ 0 },
 	m_AccumulatedAttackTime{ 0 },
+	m_AccumulatedInvTime{0},
 	m_DashTime{},
-	m_AttackTime{},
+	m_AttackTime{0.5f},
 	m_DeathTime{},
 	m_MaxJumpTime{0.8f}, 
-	m_JumpSpeed{ 1500 }
+	m_JumpSpeed{ 1300 },
+	m_InvincibilityTime{1.2f},
+	m_RecoilTime{2.f / 3.f}
 {}
 
 void StateHandler::Update(PlayerStates& currentState, Vector2f& velocity, float elapsedSec)
 {
 	UpdateAttack(currentState, elapsedSec);
+	UpdateInvincibility(currentState, elapsedSec);
 	switch (currentState.action)
 	{
 	case MovementState::idle:
@@ -29,6 +33,9 @@ void StateHandler::Update(PlayerStates& currentState, Vector2f& velocity, float 
 		break;
 	case MovementState::fall:
 		Fall(currentState, elapsedSec);
+		break;
+	case MovementState::damaged:
+		Damaged(currentState, elapsedSec);
 		break;
 	}
 }
@@ -44,6 +51,19 @@ void StateHandler::UpdateAttack(PlayerStates& currentState, float elapsedSec)
 		{
 			currentState.isAttacking = false;
 			m_AccumulatedAttackTime = 0;
+		}
+	}
+}
+
+void StateHandler::UpdateInvincibility(PlayerStates& currentState, float elapsedSec)
+{
+	if (currentState.isInvincible)
+	{
+		m_AccumulatedInvTime += elapsedSec;
+		if (m_AccumulatedInvTime > m_InvincibilityTime)
+		{
+			m_AccumulatedInvTime = 0;
+			currentState.isInvincible = false;
 		}
 	}
 }
@@ -143,16 +163,37 @@ void StateHandler::Fall(PlayerStates& currentState, float elapsedSec)
 	}
 }
 
+void StateHandler::Damaged(PlayerStates& currentState, float elapsedSec)
+{
+	m_AccumulatedTime += elapsedSec;
+	if(m_AccumulatedTime > m_RecoilTime)
+	{
+		m_AccumulatedTime = 0;
+		if (currentState.isOnGround)
+		{
+			if (CheckDirInput())
+			{
+				currentState.action = MovementState::run;
+			}
+			else
+			{
+				currentState.action = MovementState::idle;
+			}
+		}
+		else
+		{
+			currentState.action = MovementState::fall;
+		}
+	}
+}
+
 //Check functions
 
 bool StateHandler::CheckDirInput()
 {
 	const Uint8* pStates = SDL_GetKeyboardState(nullptr);
-	if (pStates[SDL_SCANCODE_A])
-	{
-		return true;
-	}
-	if (pStates[SDL_SCANCODE_D])
+	//XOR gate, if both or none are pressed player shouldnt move
+	if (pStates[SDL_SCANCODE_A] != pStates[SDL_SCANCODE_D])
 	{
 		return true;
 	}
