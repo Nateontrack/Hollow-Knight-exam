@@ -1,0 +1,42 @@
+<GameObjects>
+	
+	<GameObject>
+		<ID>0</ID>
+		<PosX>669</PosX>
+		<PosY>300</PosY>
+	</GameObject>
+	
+	<GameObject>
+		<ID>0</ID>
+		<PosX>970</PosX>
+		<PosY>430</PosY>
+	</GameObject>
+	
+	<GameObject>
+		<ID>0</ID>
+		<PosX>2003</PosX>
+		<PosY>789</PosY>
+	</GameObject>
+	
+	<GameObject>
+		<ID>0</ID>
+		<PosX>2276</PosX>
+		<PosY>891</PosY>
+	</GameObject>
+
+	<GameObject>
+		<ID>1</ID>
+		<PosX>1715</PosX>
+		<PosY>430</PosY>
+		<Width>800</Width>
+		<Height>144</Height>
+	</GameObject>
+
+	<GameObject>
+		<ID>2</ID>
+		<PosX>1210</PosX>
+		<PosY>591</PosY>
+		<Width>500</Width>
+		<Height>200</Height>
+	</GameObject>
+</GameObjects>

@@ -1,0 +1,15 @@
+<LayerData>
+	<Layer>
+		<Texture>Resources/Sprites/Foreground.png</Texture>
+		<StartPosX>0</StartPosX>
+		<StartPosY>0</StartPosY>
+		<ZPos>0</ZPos>
+	</Layer>
+
+	<Layer>
+		<Texture>Resources/Sprites/Background.png</Texture>
+		<StartPosX>0</StartPosX>
+		<StartPosY>0</StartPosY>
+		<ZPos>50</ZPos>
+	</Layer>
+</LayerData>
