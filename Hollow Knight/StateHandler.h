@@ -29,6 +29,7 @@ private:
 	void Jump(PlayerStates& currentState, Vector2f& velocity, float elapsedSec);
 	void Fall(PlayerStates& currentState, float elapsedSec);
 	void Damaged(PlayerStates& currentState, float elapsedSec);
+	void Death(PlayerStates& currentState, float elapsedSec);
 	void UpdateAttack(PlayerStates& currentState, float elapsedSec);
 	void UpdateInvincibility(PlayerStates& currentState, float elapsedSec);
 

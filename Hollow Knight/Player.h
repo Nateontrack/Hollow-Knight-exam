@@ -79,4 +79,5 @@ private:
 	//respawning
 	void SoftRespawn();
 	void HardRespawn();
+	void HandleRespawning();
 };

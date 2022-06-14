@@ -9,7 +9,7 @@ StateHandler::StateHandler(PlayerStates startStates)
 	m_AccumulatedInvTime{0},
 	m_DashTime{},
 	m_AttackTime{0.5f},
-	m_DeathTime{},
+	m_DeathTime{1.5f},
 	m_MaxJumpTime{0.8f}, 
 	m_JumpSpeed{ 1300 },
 	m_InvincibilityTime{1.2f},
@@ -36,6 +36,10 @@ void StateHandler::Update(PlayerStates& currentState, Vector2f& velocity, float 
 		break;
 	case MovementState::damaged:
 		Damaged(currentState, elapsedSec);
+		break;
+	case MovementState::death:
+	case MovementState::spikeDeath:
+		Death(currentState, elapsedSec);
 		break;
 	}
 }
@@ -184,6 +188,16 @@ void StateHandler::Damaged(PlayerStates& currentState, float elapsedSec)
 		{
 			currentState.action = MovementState::fall;
 		}
+	}
+}
+
+void StateHandler::Death(PlayerStates& currentState, float elapsedSec)
+{
+	m_AccumulatedTime += elapsedSec;
+	if (m_AccumulatedTime > m_DeathTime)
+	{
+		m_AccumulatedTime = 0;
+		currentState.isRespawning = true;
 	}
 }
 

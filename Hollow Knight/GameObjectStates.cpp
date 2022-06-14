@@ -10,7 +10,8 @@ PlayerStates::PlayerStates()
 	attackDir{ AttackDirection::horizontal },
 	isAttacking{ false },
 	isOnGround{ true },
-	isInvincible{ false }
+	isInvincible{ false },
+	isRespawning{false}
 {}
 
 PlayerStates::PlayerStates(MovementState movementState, MoveDirection moveDirection, LookDirection lookDirection, AttackDirection attack, bool isAttack, bool isGround)
@@ -20,7 +21,8 @@ PlayerStates::PlayerStates(MovementState movementState, MoveDirection moveDirect
 	attackDir{ attack },
 	isAttacking{ isAttack },
 	isOnGround{ isGround },
-	isInvincible{false}
+	isInvincible{false},
+	isRespawning{false}
 {}
 
 

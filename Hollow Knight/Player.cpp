@@ -29,6 +29,7 @@ void Player::Update(float elapsedSec)
 	CalculateVelocity(elapsedSec);
 	MovePlayer(elapsedSec);
 	UpdateAnimation(elapsedSec);
+	HandleRespawning();
 }
 
 void Player::Draw() const
@@ -89,6 +90,12 @@ AnimationState Player::CalculateAnimationState() const
 		break;
 	case MovementState::damaged:
 		return AnimationState::hit;
+	case MovementState::death:
+		return AnimationState::deathGround;
+		break;
+	case MovementState::spikeDeath:
+		return AnimationState::spikeDeath;
+		break;
 	default:
 		return AnimationState::idle;
 		break;
@@ -378,32 +385,38 @@ CollisionFunc& Player::GetCollisionFunc()
 void Player::HitPlayer(bool hitBySpike)
 {
 	//invincibility is not for spikes, only enemies
-	if (hitBySpike)
+	if (m_PlayerStates.action != MovementState::death && m_PlayerStates.action != MovementState::spikeDeath)
 	{
-		m_Health--;
-		std::cout << m_Health << std::endl;
-		if (m_Health <= 0)
+		if (hitBySpike)
 		{
-			HardRespawn();
+			m_Health--;
+			std::cout << m_Health << std::endl;
+			if (m_Health <= 0)
+			{
+				m_PlayerStates.action = MovementState::death;
+				m_Collision.velocity = Vector2f{ 0,0 };
+			}
+			else
+			{
+				m_PlayerStates.action = MovementState::spikeDeath;
+				m_Collision.velocity = Vector2f{ 0,0 };
+			}
 		}
-		else
+		else if (!m_PlayerStates.isInvincible)
 		{
-			SoftRespawn();
-		}
-	}
-	else if (!m_PlayerStates.isInvincible)
-	{
-		m_Health--;
-		std::cout << m_Health << std::endl;
-		if (m_Health <= 0)
-		{
-			HardRespawn();
-		}
-		else
-		{
-			m_PlayerStates.isInvincible = true;
-			m_PlayerStates.action = MovementState::damaged;
-			m_Collision.velocity = Vector2f{ 0,0 };
+			m_Health--;
+			std::cout << m_Health << std::endl;
+			if (m_Health <= 0)
+			{
+				m_PlayerStates.action = MovementState::death;
+				m_Collision.velocity = Vector2f{ 0,0 };
+			}
+			else
+			{
+				m_PlayerStates.isInvincible = true;
+				m_PlayerStates.action = MovementState::damaged;
+				m_Collision.velocity = Vector2f{ 0,0 };
+			}
 		}
 	}
 }
@@ -418,4 +431,22 @@ void Player::SoftRespawn()
 {
 	m_Collision.combatHitbox.left = 200;
 	m_Collision.combatHitbox.bottom = 200;
+	m_PlayerStates.action = MovementState::idle;
+}
+
+void Player::HandleRespawning()
+{
+	if (m_PlayerStates.isRespawning)
+	{
+		m_PlayerStates.isRespawning = false;
+		switch (m_PlayerStates.action)
+		{
+		case MovementState::death:
+			HardRespawn();
+			break;
+		case MovementState::spikeDeath:
+			SoftRespawn();
+			break;
+		}
+	}
 }

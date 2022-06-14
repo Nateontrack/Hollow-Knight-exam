@@ -15,7 +15,8 @@ enum class AnimationState
 	deathGround,
 	turn,
 	hit,
-	invincible
+	invincible,
+	spikeDeath
 };
 
 enum class MoveDirection
@@ -39,8 +40,9 @@ enum class MovementState
 	run,
 	jump,
 	fall,
-	attack,
-	damaged
+	death,
+	spikeDeath,
+	damaged,
 };
 
 enum class AttackDirection
@@ -70,6 +72,7 @@ struct PlayerStates
 	bool isOnGround;
 	bool isAttacking;
 	bool isInvincible;
+	bool isRespawning;
 };
 
 enum class GameObjectType
