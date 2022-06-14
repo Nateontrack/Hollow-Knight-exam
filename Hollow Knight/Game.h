@@ -33,6 +33,11 @@ private:
 	Camera m_Camera;
 	ParallaxManager m_ParallaxManager;
 
+	const float m_FadeTime;
+	float m_ElapsedFadeTime;
+	bool m_IsFading;
+	Color4f m_Fader;
+
 	Point2f m_StartPosPlayer;
 	const float m_WindowScaleFactor;
 	// FUNCTIONS
@@ -41,4 +46,6 @@ private:
 	void ClearBackground( ) const;
 	void ResetKnightAnimations(const PlayerStates& previousState);
 	void HandlePlayerHit();
+	void CheckForFading();
+	void FadeScreen(float elapsedSec);
 };

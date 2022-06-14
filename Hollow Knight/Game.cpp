@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Game.h"
+#include "utils.h"
 #include <string>
 #include <iostream>
 
@@ -8,7 +9,11 @@ Game::Game( const Window& window )
 	m_Level{ "Resources/XML/GameObjects.xml", Point2f{window.width / 2, 200} },
 	m_StartPosPlayer{window.width / 2, 200},
 	m_ParallaxManager{"Resources/XML/ParallaxData.xml"},
-	m_WindowScaleFactor{2.f / 3.f}
+	m_WindowScaleFactor{2.f / 3.f},
+	m_Fader{0,0,0,0},
+	m_ElapsedFadeTime{1.5},
+	m_IsFading{true},
+	m_FadeTime{3.f}
 {
 	Initialize( );
 }
@@ -42,6 +47,11 @@ void Game::Update( float elapsedSec )
 	m_Level.Update(elapsedSec);
 	m_Camera.Update(m_Player->GetCollisionFunc().combatHitbox, elapsedSec);
 	m_ParallaxManager.Update(m_Camera.GetLastCameraTransform());
+	CheckForFading();
+	if (m_IsFading)
+	{
+		FadeScreen(elapsedSec);
+	}
 
 	ResetKnightAnimations(first);
 	//resets animation if changed in state
@@ -61,6 +71,11 @@ void Game::Draw( )
 		m_Level.DrawForeground();
 	}
 	glPopMatrix();
+	if (m_IsFading)
+	{
+		utils::SetColor(m_Fader);
+		utils::FillRect(Rectf{ 0,0,m_Window.width, m_Window.height });
+	}
 }
 
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
@@ -136,5 +151,30 @@ void Game::HandlePlayerHit()
 	else if (m_Level.CheckForHitEnemies(m_Player->GetCollisionFunc().combatHitbox))
 	{
 		m_Player->HitPlayer(false);
+	}
+}
+
+void Game::CheckForFading()
+{
+	PlayerStates currentState{ m_Player->GetState() };
+	if (currentState.action == MovementState::spikeDeath || currentState.action == MovementState::death)
+	{
+		m_IsFading = true;
+	}
+}
+
+void Game::FadeScreen(float elapsedSec)
+{
+	//switches from fade out to fade out at halfwaymark
+	m_ElapsedFadeTime += elapsedSec;
+	if (m_ElapsedFadeTime < m_FadeTime)
+	{
+		m_Fader.a = sinf(m_ElapsedFadeTime / m_FadeTime * static_cast<float>(M_PI));
+	}
+	else
+	{
+		m_Fader.a = 0;
+		m_ElapsedFadeTime = 0;
+		m_IsFading = false;
 	}
 }
