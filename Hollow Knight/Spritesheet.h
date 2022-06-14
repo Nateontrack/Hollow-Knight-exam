@@ -6,7 +6,6 @@ class Spritesheet final
 {
 public:
 	Spritesheet(const std::string& XMLFilePath, const std::string& srcImagePath);
-	~Spritesheet();
 
 	void Update(AnimationState state, float elapsedSec);
 	void Draw(AnimationState state, const Point2f& centerPos) const;
@@ -16,7 +15,7 @@ public:
 
 private:
 	Texture* m_pSprite;
-	std::unordered_map<AnimationState, Animation*> m_pAnimations;
+	std::unordered_map<AnimationState, Animation> m_Animations;
 
 	void LoadAnimationsFromFile(const std::string& XMLFilePath);
 	void LoadAnimationsFromString(const std::string& spritesheetData);

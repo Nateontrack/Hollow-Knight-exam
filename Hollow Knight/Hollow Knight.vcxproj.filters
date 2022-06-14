@@ -96,6 +96,12 @@
     <ClCompile Include="Spike.cpp">
       <Filter>Game Files\GameObjects</Filter>
     </ClCompile>
+    <ClCompile Include="Breakable.cpp">
+      <Filter>Game Files\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureManager.cpp">
+      <Filter>Game Files\Animation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core.h">
@@ -166,6 +172,12 @@
     </ClInclude>
     <ClInclude Include="Spike.h">
       <Filter>Game Files\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Breakable.h">
+      <Filter>Game Files\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureManager.h">
+      <Filter>Game Files\Animation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -13,8 +13,8 @@ public:
 	virtual void Update(float elapsedSec) = 0;
 	/*virtual bool HandleCollision(const Rectf& actorHitbox) = 0;*/
 	
-	bool CheckForHit(const Rectf& hitbox);
-	bool GetIsDead();
+	bool CheckForHit(const Rectf& hitbox) const;
+	bool GetIsDead() const;
 	virtual void HitEnemy() = 0;
 
 protected:

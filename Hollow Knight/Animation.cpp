@@ -39,10 +39,6 @@ Animation::Animation(Texture* pTexture, const Point2f& firstPos, int nrFrames, f
 	m_SrcRect.height = m_FrameHeight;
 }
 
-Animation::~Animation()
-{
-}
-
 void Animation::Update(float elapsedSec)
 {
 	m_AccumulatedTime += elapsedSec;
@@ -69,7 +65,7 @@ void Animation::Update(float elapsedSec)
 	}	
 }
 
-void Animation::Draw(const Point2f& centerPos)
+void Animation::Draw(const Point2f& centerPos) const
 {
 	Point2f bottomLeft{ centerPos.x - m_FrameWidth / 2, centerPos.y - m_FrameHeight / 2 };
 	m_pTexture->Draw(bottomLeft, m_SrcRect);

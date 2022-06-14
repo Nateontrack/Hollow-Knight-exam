@@ -11,9 +11,10 @@ Game::Game( const Window& window )
 	m_ParallaxManager{"Resources/XML/ParallaxData.xml"},
 	m_WindowScaleFactor{2.f / 3.f},
 	m_Fader{0,0,0,0},
-	m_ElapsedFadeTime{1.5},
+	m_ElapsedFadeTime{2.f},
 	m_IsFading{true},
-	m_FadeTime{3.f}
+	m_FadeTime{4.f},
+	m_TextureManager{}
 {
 	Initialize( );
 }
@@ -34,6 +35,7 @@ void Game::Cleanup( )
 {
 	delete m_Player;
 	m_Player = nullptr;
+	TextureManager::DeleteStaticInstance();
 }
 
 void Game::Update( float elapsedSec )

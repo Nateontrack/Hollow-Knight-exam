@@ -8,7 +8,6 @@ class Platform
 public:
 	Platform();
 	Platform(const Point2f& bottomLeft);
-	~Platform();
 
 	//main loop
 	void Draw() const;

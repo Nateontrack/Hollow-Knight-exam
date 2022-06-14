@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "Camera.h"
 #include "ParallaxManager.h"
+#include "TextureManager.h"
 
 class Game final
 {
@@ -32,6 +33,7 @@ private:
 	Player* m_Player;
 	Camera m_Camera;
 	ParallaxManager m_ParallaxManager;
+	TextureManager m_TextureManager;
 
 	const float m_FadeTime;
 	float m_ElapsedFadeTime;

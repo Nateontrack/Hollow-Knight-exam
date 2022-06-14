@@ -82,6 +82,13 @@ enum class GameObjectType
 	Crawlid
 };
 
+enum class BreakableState
+{
+	whole,
+	breaking,
+	broken
+};
+
 struct CollisionFunc
 {
 	Rectf combatHitbox;

@@ -1,5 +1,6 @@
 #include "Platform.h"
 #include "utils.h"
+#include "TextureManager.h"
 
 using namespace utils;
 
@@ -9,7 +10,7 @@ Platform::Platform()
 
 Platform::Platform(const Point2f& bottomLeft)
 	:
-	m_pTexture{new Texture{"Resources/Sprites/platform01.png"} },
+	m_pTexture{TextureManager::GetInstance()->GetTexture("Resources/Sprites/platform01.png")},
 	m_CollisionOffset{0.1f}
 {
 	m_Shape.left = bottomLeft.x;
@@ -17,12 +18,6 @@ Platform::Platform(const Point2f& bottomLeft)
 	m_Shape.width = m_pTexture->GetWidth();
 	m_Shape.height = m_pTexture->GetHeight();
 	m_PlatformVertices = GetVertices(m_Shape);
-}
-
-Platform::~Platform()
-{
-	delete m_pTexture;
-	m_pTexture = nullptr;
 }
 
 void Platform::Draw() const

@@ -3,57 +3,44 @@
 #include <string>
 #include <iostream>
 #include "utils.h"
+#include "TextureManager.h"
 
 using namespace utils;
 
 Spritesheet::Spritesheet(const std::string& XMLFilePath, const std::string& srcImagePath)
-	:m_pAnimations{},
-	m_pSprite{new Texture(srcImagePath)}
+	:m_Animations{},
+	m_pSprite{ TextureManager::GetInstance()->GetTexture(srcImagePath) }
 {
 	LoadAnimationsFromFile(XMLFilePath);
-}
-
-Spritesheet::~Spritesheet()
-{
-	delete m_pSprite;
-	m_pSprite = nullptr;
-
-	for (auto& it : m_pAnimations)
-	{
-		delete it.second;
-		it.second = nullptr;
-	}
-
-	m_pAnimations.clear();
 }
 
 void Spritesheet::Update(AnimationState state, float elapsedSec)
 {
 //state manipulation + animation updating
-m_pAnimations.at(state)->Update(elapsedSec);
+m_Animations.at(state).Update(elapsedSec);
 }
 
 void Spritesheet::Draw(AnimationState state, const Point2f& centerPos) const
 {
-	m_pAnimations.at(state)->Draw(centerPos);
+	m_Animations.at(state).Draw(centerPos);
 }
 
 void Spritesheet::ResetAnim(bool isAttackAnim)
 {
 	if (isAttackAnim)
 	{
-		for (auto& it : m_pAnimations)
+		for (auto& it : m_Animations)
 		{
-			it.second->Reset();
+			it.second.Reset();
 		}
 	}
 	else
 	{
-		for (auto& it : m_pAnimations)
+		for (auto& it : m_Animations)
 		{
-			if (!it.second->GetIsAttackAnim())
+			if (!it.second.GetIsAttackAnim())
 			{
-				it.second->Reset();
+				it.second.Reset();
 			}
 		}
 	}
@@ -130,12 +117,12 @@ void Spritesheet::CreateAnimation(const std::string& animationData)
 
 	if (GetAttributeValue("frameTime", animationData) == "default")
 	{
-		m_pAnimations.insert(std::make_pair(id, new Animation{ m_pSprite, firstPos, nrFrames, width, height, isAttackAnim, isRepeating, repeatFrame }));
+		m_Animations.insert(std::make_pair(id, Animation{ m_pSprite, firstPos, nrFrames, width, height, isAttackAnim, isRepeating, repeatFrame }));
 	}
 	else
 	{
 		float frameTime{ std::stof(GetAttributeValue("frameTime", animationData)) };
-		m_pAnimations.insert(std::make_pair(id, new Animation{ m_pSprite, firstPos, nrFrames, width, height, isAttackAnim, frameTime, isRepeating, repeatFrame }));
+		m_Animations.insert(std::make_pair(id, Animation{ m_pSprite, firstPos, nrFrames, width, height, isAttackAnim, frameTime, isRepeating, repeatFrame }));
 	}
 }
 

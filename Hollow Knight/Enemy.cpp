@@ -62,12 +62,12 @@ bool Enemy::Clamp()
 	return hasClamped;
 }
 
-bool Enemy::CheckForHit(const Rectf& hitbox)
+bool Enemy::CheckForHit(const Rectf& hitbox) const
 {
 	return IsOverlapping(hitbox, m_Hitbox);
 }
 
-bool Enemy::GetIsDead()
+bool Enemy::GetIsDead() const
 {
 	return m_IsDead;
 }

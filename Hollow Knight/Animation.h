@@ -6,9 +6,8 @@ class Animation final
 public:
 	Animation(Texture* pTexture, const Point2f& firstPos, int nrFrames, float width, float height, bool isAttackAnim, bool isRepeating = false, int repeatFrame = 0);
 	Animation(Texture* pTexture, const Point2f& firstPos, int nrFrames, float width, float height, bool isAttackAnim, float frameTime, bool isRepeating = false, int repeatFrame = 0);
-	~Animation();
 
-	void Draw(const Point2f& centerPos);
+	void Draw(const Point2f& centerPos) const;
 	void Update(float elapsedSec);
 
 	void Reset();
