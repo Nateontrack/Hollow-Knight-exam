@@ -22,6 +22,9 @@
     <Filter Include="Game Files\Camera">
       <UniqueIdentifier>{8e7f7020-3d51-4fed-a3d9-6213e42c97c5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game Files\Sound">
+      <UniqueIdentifier>{3d6a94c6-9f1a-47c5-a0e5-e45210a04de1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -102,6 +105,12 @@
     <ClCompile Include="TextureManager.cpp">
       <Filter>Game Files\Animation</Filter>
     </ClCompile>
+    <ClCompile Include="SoundManager.cpp">
+      <Filter>Game Files\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundUtils.cpp">
+      <Filter>Game Files\Sound</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core.h">
@@ -179,6 +188,12 @@
     <ClInclude Include="TextureManager.h">
       <Filter>Game Files\Animation</Filter>
     </ClInclude>
+    <ClInclude Include="SoundManager.h">
+      <Filter>Game Files\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundUtils.h">
+      <Filter>Game Files\Sound</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Resources\XML\KnightAnimations.xml">
@@ -193,8 +208,22 @@
     <Xml Include="Resources\XML\CrawlidAnimations.xml">
       <Filter>Resource Files</Filter>
     </Xml>
-    <Xml Include="HitAnimation.xml">
+    <Xml Include="Resources\XML\DoorwayAnim.xml">
       <Filter>Resource Files</Filter>
     </Xml>
+    <Xml Include="Resources\XML\HitAnimation.xml">
+      <Filter>Resource Files</Filter>
+    </Xml>
+    <Xml Include="Resources\XML\SpikeAAnim.xml">
+      <Filter>Resource Files</Filter>
+    </Xml>
+    <Xml Include="Resources\XML\SpikeBAnim.xml">
+      <Filter>Resource Files</Filter>
+    </Xml>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\XML\LevelVertices.svg">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

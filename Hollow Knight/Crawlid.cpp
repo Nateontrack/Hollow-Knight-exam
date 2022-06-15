@@ -175,11 +175,11 @@ void Crawlid::HandleHit(float elapsedSec)
 		{
 			m_IsHit = false;
 			m_AccumulatedHitTime = 0;
-			m_pHitAnimation->ResetAnim(true);
+			m_HitAnimation.ResetAnim(true);
 		}
 		else
 		{
-			m_pHitAnimation->Update(AnimationState::hit, elapsedSec);
+			m_HitAnimation.Update(AnimationState::hit, elapsedSec);
 		}
 	}
 }
@@ -191,6 +191,6 @@ void Crawlid::DrawAnimations() const
 
 	if (m_IsHit)
 	{
-		m_pHitAnimation->Draw(AnimationState::hit, centerPos);
+		m_HitAnimation.Draw(AnimationState::hit, centerPos);
 	}
 }

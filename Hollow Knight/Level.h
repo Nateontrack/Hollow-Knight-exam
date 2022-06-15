@@ -6,6 +6,7 @@
 #include "Platform.h"
 #include "Crawlid.h"
 #include "Spike.h"
+#include "Breakable.h"
 
 class Level
 {
@@ -29,10 +30,13 @@ private:
 	std::vector<Platform*> m_pPlatforms;
 	std::vector<Enemy*> m_pEnemies;
 	std::vector<Spike*> m_pSpikes;
+	std::vector<Breakable*> m_pBreakables;
 	Rectf m_Boundaries;
 
 	const float m_CollisionOffset;
 	Point2f m_RespawnPos;
+
+	std::string m_AmbientSound;
 
 	//functions
 	void InitLevelVerts();
@@ -41,12 +45,15 @@ private:
 
 	void HandleCollisionLevel(Rectf& actorHitbox, Vector2f& actorVelocity);
 	void HandleCollisionPlatforms(Rectf& actorHitbox, Vector2f& actorVelocity);
+	void HandleCollisionBreakables(Rectf& actorHitbox, Vector2f& actorVelocity);
 	
 	bool IsOnGroundLevel(const Rectf& actorHitbox) const;
 	bool IsOnGroundPlatforms(const Rectf& actorHitbox) const;
 	void DrawPlatforms() const;
 	void UpdateEnemies(float elapsedSec);
 	void DrawEnemies() const;
+	void UpdateBreakables(float elapsedSec);
+	void DrawBreakables() const;
 	void DrawDebugRectsSpikes() const;
 	
 
@@ -57,5 +64,6 @@ private:
 	void CreateSpike(const std::string& spikeData);
 	void CreatePlatform(const std::string& platformData);
 	void CreateCrawlid(const std::string& crawlidData);
+	void CreateBreakable(const std::string& breakableData);
 };
 

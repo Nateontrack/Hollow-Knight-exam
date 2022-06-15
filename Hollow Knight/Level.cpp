@@ -1,16 +1,20 @@
 #include "Level.h"
 #include "utils.h"
 #include "SVGParser.h"
+#include "SoundUtils.h"
 #include <iostream>
 #include <string>
 #include <fstream>
 
 using namespace utils;
+using namespace soundUtils;
 
 Level::Level(const std::string& filePath, const Point2f& startPos)
 	:m_CollisionOffset{0.01f},
-	m_RespawnPos{startPos}
+	m_RespawnPos{startPos},
+	m_AmbientSound{"Resources/Sounds/CaveAmbience.wav"}
 {
+	//PlaySoundStream(m_AmbientSound);
 	InitLevelVerts();
 	InitLevelBoundaries();
 	LoadGameObjectDataFromFile(filePath);
@@ -18,6 +22,7 @@ Level::Level(const std::string& filePath, const Point2f& startPos)
 
 Level::~Level()
 {
+
 	CleanUp();
 }
 
@@ -40,6 +45,7 @@ void Level::InitLevelBoundaries()
 void Level::DrawEntities() const
 {
 	DrawEnemies();
+	DrawBreakables();
 }
 
 void Level::DrawForeground() const
@@ -188,6 +194,13 @@ void Level::CleanUp()
 		it = nullptr;
 	}
 	m_pSpikes.clear();
+
+	for (Breakable* it : m_pBreakables)
+	{
+		delete it;
+		it = nullptr;
+	}
+	m_pBreakables.clear();
 }
 
 void Level::DrawPlatforms() const
@@ -217,6 +230,7 @@ void Level::DrawEnemies() const
 void Level::Update(float elapsedSec)
 {
 	UpdateEnemies(elapsedSec);
+	UpdateBreakables(elapsedSec);
 }
 
 void Level::DrawDebugRectsSpikes() const
@@ -235,6 +249,26 @@ void Level::HandleAttack(const Rectf& attackRect)
 		{
 			pEnemy->HitEnemy();
 		}
+	}
+	for (Breakable* pBreakable : m_pBreakables)
+	{
+		pBreakable->CheckForHit(attackRect);
+	}
+}
+
+void Level::DrawBreakables() const
+{
+	for (Breakable* pBreakable : m_pBreakables)
+	{
+		pBreakable->Draw();
+	}
+}
+
+void Level::UpdateBreakables(float elapsedSec)
+{
+	for (Breakable* pBreakable : m_pBreakables)
+	{
+		pBreakable->Update(elapsedSec);
 	}
 }
 
@@ -299,14 +333,17 @@ void Level::CreateGameObject(const std::string& gameObjectData)
 	GameObjectType id{ static_cast<GameObjectType>(std::stoi(GetAttributeValue("ID", gameObjectData))) };
 	switch (id)
 	{
-	case GameObjectType::Platform:
+	case GameObjectType::platform:
 		CreatePlatform(gameObjectData);
 		break;
-	case GameObjectType::Spike:
+	case GameObjectType::spike:
 		CreateSpike(gameObjectData);
 		break;
-	case GameObjectType::Crawlid:
+	case GameObjectType::crawlid:
 		CreateCrawlid(gameObjectData);
+		break;
+	case GameObjectType::breakable:
+		CreateBreakable(gameObjectData);
 		break;
 	}
 }
@@ -340,5 +377,40 @@ void Level::CreateCrawlid(const std::string& crawlidData)
 	boundaries.height = std::stof(GetAttributeValue("Height", crawlidData));
 
 	m_pEnemies.push_back(new Crawlid{ boundaries });
+}
+
+void Level::CreateBreakable(const std::string& breakableData)
+{
+	Rectf hitbox{};
+	BreakableType type{};
+	int maxHealth{};
+	bool isSolid{};
+	float breakTime{};
+	std::string xmlPath{};
+
+	hitbox.left = std::stof(GetAttributeValue("PosX", breakableData));
+	hitbox.bottom = std::stof(GetAttributeValue("PosY", breakableData));
+	hitbox.width = std::stof(GetAttributeValue("Width", breakableData));
+	hitbox.height = std::stof(GetAttributeValue("Height", breakableData));
+	maxHealth = std::stoi(GetAttributeValue("Health", breakableData));
+	isSolid = static_cast<bool>(std::stoi(GetAttributeValue("Solid", breakableData)));
+	type = static_cast<BreakableType>(std::stoi(GetAttributeValue("Type", breakableData)));
+	breakTime = std::stof(GetAttributeValue("BreakTime", breakableData));
+	switch (type)
+	{
+	case BreakableType::spikeA:
+		xmlPath = "Resources/XML/SpikeAAnim.xml";
+		break;
+	case BreakableType::spikeB:
+		xmlPath = "Resources/XML/SpikeBAnim.xml";
+		break;
+	case BreakableType::doorway:
+		xmlPath = "Resources/XML/DoorwayAnim.xml";
+		break;
+	default:
+		break;
+	}
+
+	m_pBreakables.push_back(new Breakable{ maxHealth, hitbox, xmlPath, isSolid, breakTime});
 }
 #pragma endregion parsing

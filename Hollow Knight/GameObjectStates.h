@@ -16,7 +16,8 @@ enum class AnimationState
 	turn,
 	hit,
 	invincible,
-	spikeDeath
+	spikeDeath,
+	still
 };
 
 enum class MoveDirection
@@ -77,9 +78,10 @@ struct PlayerStates
 
 enum class GameObjectType
 {
-	Platform,
-	Spike,
-	Crawlid
+	platform,
+	spike,
+	crawlid,
+	breakable
 };
 
 enum class BreakableState
@@ -87,6 +89,13 @@ enum class BreakableState
 	whole,
 	breaking,
 	broken
+};
+
+enum class BreakableType
+{
+	spikeA,
+	spikeB,
+	doorway
 };
 
 struct CollisionFunc

@@ -7,7 +7,7 @@ class Enemy
 {
 public:
 	Enemy(const Rectf& hitbox, const Rectf& boundaries, int health);
-	virtual ~Enemy();
+	virtual ~Enemy() = default;
 
 	virtual void Draw() const = 0;
 	virtual void Update(float elapsedSec) = 0;
@@ -22,7 +22,7 @@ protected:
 	Rectf m_Hitbox;
 	MoveDirection m_MoveDirState;
 	Rectf m_Boundaries;
-	Spritesheet* m_pHitAnimation;
+	Spritesheet m_HitAnimation;
 	int m_Health;
 	float m_HitTime;
 	float m_AccumulatedHitTime;

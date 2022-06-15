@@ -1,8 +1,10 @@
 #include "Player.h"
 #include "utils.h"
+#include "SoundUtils.h"
 #include <iostream>
 
 using namespace utils;
+using namespace soundUtils;
 
 Player::Player(const Point2f& startPos)
 	:m_WalkSpeed{400},
@@ -20,6 +22,7 @@ Player::Player(const Point2f& startPos)
 {
 	m_Health = m_MaxHealth;
 	InitializeCollision(startPos); 
+	InitializeSounds();
 }
 
 void Player::Update(float elapsedSec)
@@ -29,6 +32,7 @@ void Player::Update(float elapsedSec)
 	CalculateVelocity(elapsedSec);
 	MovePlayer(elapsedSec);
 	UpdateAnimation(elapsedSec);
+	UpdateSounds(elapsedSec);
 	HandleRespawning();
 }
 
@@ -302,6 +306,8 @@ bool Player::ExecuteAttack()
 		}
 		
 		m_Collision.attackHitbox.bottom = m_Collision.combatHitbox.bottom;
+
+		PlaySoundEffect(m_NailSwingSound, 1);
 		return true;
 	}
 	else return false;
@@ -448,5 +454,26 @@ void Player::HandleRespawning()
 			SoftRespawn();
 			break;
 		}
+	}
+}
+
+void Player::InitializeSounds()
+{
+	m_NailSwingSound = "Resources/Sounds/NailSwing.wav";
+	m_FootstepSound = "Resources/Sounds/KnightFootSteps.wav";
+}
+
+void Player::UpdateSounds(float elapsedSec)
+{
+	if (m_PlayerStates.action == MovementState::run)
+	{
+		if (!GetIsPlayingEffect(m_FootstepSound))
+		{
+			PlaySoundEffect(m_FootstepSound, 1);
+		}
+	}
+	else
+	{
+		if (GetIsPlayingEffect(m_FootstepSound)) StopSoundEffect(m_FootstepSound);
 	}
 }

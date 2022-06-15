@@ -1,9 +1,10 @@
 #pragma once
+#include "pch.h"
 #include "GameObjectStates.h"
 #include "Spritesheet.h"
-#include "structs.h"
 #include "Vector2f.h"
 #include "StateHandler.h"
+
 
 class Player
 {
@@ -45,6 +46,10 @@ private:
 
 	float m_HitboxDif;
 
+	//Sounds
+	std::string m_NailSwingSound;
+	std::string m_FootstepSound;
+
 	//Hitboxes
 	Vector2f m_AttackOffset;
 	CollisionFunc m_Collision;
@@ -59,6 +64,7 @@ private:
 	//main loop
 	void DrawAnimation() const;
 	void UpdateAnimation(float elapsedSec);
+	void UpdateSounds(float elapsedSec);
 
 	void HandleKeyboardState();
 	void CalculateVelocity(float elapsedSec);
@@ -72,6 +78,7 @@ private:
 
 	//Initialization
 	void InitializeCollision(const Point2f& startPos);
+	void InitializeSounds();
 
 	//debugging
 	void DrawHitboxes() const;

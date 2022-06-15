@@ -39,4 +39,16 @@
 		<Width>500</Width>
 		<Height>200</Height>
 	</GameObject>
+
+	<GameObject>
+		<ID>3</ID>
+		<Type>0</Type>
+		<Solid>0</Solid>
+		<Health>1</Health>
+		<PosX>669</PosX>
+		<PosY>100</PosY>
+		<BreakTime>0.45</BreakTime>
+		<Width>74</Width>
+		<Height>175</Height>
+	</GameObject>
 </GameObjects>
