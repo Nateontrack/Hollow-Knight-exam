@@ -3,7 +3,8 @@
 #include "SoundEffect.h"
 
 SoundEffect::SoundEffect( const std::string& path )
-	:m_pMixChunk{ Mix_LoadWAV( path.c_str( ) ) }
+	:m_pMixChunk{ Mix_LoadWAV( path.c_str( ) ) },
+	m_ChannelID{}
 {
 	if ( m_pMixChunk == nullptr )
 	{
@@ -22,15 +23,31 @@ bool SoundEffect::IsLoaded( ) const
 	return m_pMixChunk != nullptr;
 }
 
-bool SoundEffect::Play( int loops ) const
+bool SoundEffect::Play(int loops)
 {
 	// Don't save the channel as a data member, 
 	// because when it stops playing the channel becomes free
 	// and available for usage by other effects
-	if ( m_pMixChunk != nullptr )
+	/*if ( m_pMixChunk != nullptr )
 	{
 		int channel{ Mix_PlayChannel( -1, m_pMixChunk, loops ) };
 		return channel == -1 ? false : true;
+	}
+	else
+	{
+		return false;
+	}*/
+
+	if (!m_pMixChunk)
+	{
+		return false;
+	}
+
+	m_ChannelID = Mix_PlayChannel(-1, m_pMixChunk, loops);
+
+	if (m_ChannelID != -1)
+	{
+		return true;
 	}
 	else
 	{
@@ -72,6 +89,31 @@ void SoundEffect::ResumeAll( )
 	Mix_Resume( -1 );
 }
 
+void SoundEffect::Pause()
+{
+	if (m_ChannelID < 0)
+	{
+		return;
+	}
+	if (Mix_GetChunk(m_ChannelID) == m_pMixChunk && Mix_Playing(m_ChannelID))
+	{
+		Mix_Pause(m_ChannelID);
+	}
+}
 
+void SoundEffect::Stop()
+{
+	if (m_ChannelID < 0)
+	{
+		return;
+	}
+	if (Mix_GetChunk(m_ChannelID) == m_pMixChunk && Mix_Playing(m_ChannelID))
+	{
+		Mix_HaltChannel(m_ChannelID);
+	}
+}
 
-
+bool SoundEffect::GetIsPlaying() const
+{
+	return Mix_Playing(m_ChannelID);
+}

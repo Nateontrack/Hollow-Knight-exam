@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Game.h"
 #include "utils.h"
+#include "SoundManager.h"
+#include "TextureManager.h"
 #include <string>
 #include <iostream>
 
@@ -13,8 +15,7 @@ Game::Game( const Window& window )
 	m_Fader{0,0,0,0},
 	m_ElapsedFadeTime{2.f},
 	m_IsFading{true},
-	m_FadeTime{4.f},
-	m_TextureManager{}
+	m_FadeTime{4.f}
 {
 	Initialize( );
 }
@@ -36,6 +37,7 @@ void Game::Cleanup( )
 	delete m_Player;
 	m_Player = nullptr;
 	TextureManager::DeleteStaticInstance();
+	SoundManager::DeleteInstance();
 }
 
 void Game::Update( float elapsedSec )
@@ -54,7 +56,6 @@ void Game::Update( float elapsedSec )
 	{
 		FadeScreen(elapsedSec);
 	}
-
 	ResetKnightAnimations(first);
 	//resets animation if changed in state
 }
