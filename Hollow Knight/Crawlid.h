@@ -10,7 +10,7 @@ public:
 	virtual ~Crawlid() override final;
 
 	virtual void Draw() const override final;
-	virtual void Update(float elapsedSec) override final;
+	virtual void Update(float elapsedSec, const Point2f& playerPos) override final;
 	/*virtual bool HandleCollision(const Rectf& actorHitbox) override final;*/
 
 	virtual void HitEnemy() override final;
@@ -21,7 +21,14 @@ private:
 	const float m_deathAirTime;
 	const float m_TurnTime;
 	const float m_WalkSpeed;
+	const float m_HearingDistance;
 	float m_AccumulatedTime;
+
+	//sounds
+	float m_CurrentVolume;
+	std::string m_WalkSound;
+	std::string m_HitSound;
+	std::string m_DeathSound;
 
 	void CalculateVelocity();
 	void FlipImage() const;
@@ -31,5 +38,8 @@ private:
 	virtual void HandleState(float elapsedSec) override final;
 	void HandleHit(float elapsedSec);
 	void DrawAnimations() const;
+	void CalcSoundVolume(float distance);
+	void PlayWalkSound() const;
+	void InitializeSounds();
 };
 
