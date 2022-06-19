@@ -17,7 +17,9 @@ enum class AnimationState
 	hit,
 	invincible,
 	spikeDeath,
-	still
+	still,
+	dash,
+	dashEffect
 };
 
 enum class MoveDirection
@@ -44,6 +46,7 @@ enum class MovementState
 	death,
 	spikeDeath,
 	damaged,
+	dash
 };
 
 enum class AttackDirection
@@ -69,6 +72,7 @@ struct PlayerStates
 	MovementState action;
 	MoveDirection moveDir;
 	LookDirection lookDir;
+	LookDirection lookDirHor;
 	AttackDirection attackDir;
 	bool isOnGround;
 	bool isAttacking;
@@ -81,7 +85,8 @@ enum class GameObjectType
 	platform,
 	spike,
 	crawlid,
-	breakable
+	breakable,
+	powerUp
 };
 
 enum class BreakableState
@@ -98,10 +103,30 @@ enum class BreakableType
 	doorway
 };
 
+enum class PlatformType
+{
+	platform01 = 1, //width:128	height:45
+	platform02 = 2, //width:84	height:45
+	platform03 = 3, //width:79  height:45
+	platform04 = 4,	//width:67  height:45
+	platform05 = 5,	//width:127	height:45
+	platform06 = 6,	//width:100	height:152
+	platform07 = 7,	//width:195	height:54
+	platform08 = 8,	//width:100	height:100
+	platform09 = 9,	//width:100	height:100
+};
+
 struct CollisionFunc
 {
 	Rectf combatHitbox;
 	Rectf movementHitbox;
 	Rectf attackHitbox;
 	Vector2f velocity;
+};
+
+enum class HealthState
+{
+	on,
+	breaking,
+	off
 };
