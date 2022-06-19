@@ -1,13 +1,15 @@
 #include "Player.h"
 #include "utils.h"
 #include "SoundUtils.h"
+#include "TextureManager.h"
 #include <iostream>
 
 using namespace utils;
 using namespace soundUtils;
 
 Player::Player(const Point2f& startPos)
-	:m_WalkSpeed{400},
+	:m_WalkSpeed{490},
+	m_DashSpeed{1000},
 	m_JumpSpeed{23},
 	m_TerminalVelocity{-400},
 	m_Gravity{0,-2000},
@@ -15,10 +17,12 @@ Player::Player(const Point2f& startPos)
 	m_PlayerStates{},
 	m_Animations{"Resources/XML/KnightAnimations.xml", "Resources/Sprites/KnightSheet.png"},
 	m_StateHandler{m_PlayerStates},
-	m_LookDirHor{LookDirection::right},
 	m_AttackOffset{-90, -10},
+	m_DashOffset{170, 0},
 	m_MaxHealth{5},
-	m_Coins{}
+	m_Coins{},
+	m_RespawnPoint{startPos},
+	m_pLighting{TextureManager::GetInstance()->GetTexture("Resources/Sprites/CharacterLight.png")}
 {
 	m_Health = m_MaxHealth;
 	InitializeCollision(startPos); 
@@ -30,7 +34,6 @@ void Player::Update(float elapsedSec)
 	HandleKeyboardState();
 	m_StateHandler.Update(m_PlayerStates, m_Collision.velocity, elapsedSec);
 	CalculateVelocity(elapsedSec);
-	MovePlayer(elapsedSec);
 	UpdateAnimation(elapsedSec);
 	UpdateSounds(elapsedSec);
 	HandleRespawning();
@@ -38,7 +41,8 @@ void Player::Update(float elapsedSec)
 
 void Player::Draw() const
 {
-	switch (m_LookDirHor)
+	DrawLight();
+	switch (m_PlayerStates.lookDirHor)
 	{
 	case LookDirection::left:
 		DrawAnimation();
@@ -66,11 +70,9 @@ AnimationState Player::CalculateAnimationState() const
 		case LookDirection::right:
 			return AnimationState::attackHor;
 			break;
-
 		case LookDirection::up:
 			return AnimationState::attackUp;
 			break;
-
 		case LookDirection::down:
 			return AnimationState::attackDown;
 			break;
@@ -100,6 +102,9 @@ AnimationState Player::CalculateAnimationState() const
 	case MovementState::spikeDeath:
 		return AnimationState::spikeDeath;
 		break;
+	case MovementState::dash:
+		return AnimationState::dash;
+		break;
 	default:
 		return AnimationState::idle;
 		break;
@@ -122,6 +127,11 @@ void Player::DrawAnimation() const
 	}
 
 	m_Animations.Draw(CalculateAnimationState(), centerPos);
+
+	if (m_PlayerStates.action == MovementState::dash)
+	{
+		m_Animations.Draw(CalculateEffectAnimation(), centerPos + m_DashOffset);
+	}
 	
 	if (m_PlayerStates.isAttacking)
 	{
@@ -129,9 +139,22 @@ void Player::DrawAnimation() const
 	}
 }
 
+void Player::DrawLight() const
+{
+	Point2f pos{GetCenterPos()};
+	pos.x -= m_pLighting->GetWidth() / 2;
+	pos.y -= m_pLighting->GetHeight() / 2;
+
+	m_pLighting->Draw( pos );
+}
+
 void Player::UpdateAnimation(float elapsedSec)
 {
 	m_Animations.Update(CalculateAnimationState(), elapsedSec);
+	if (m_PlayerStates.action == MovementState::dash)
+	{
+		m_Animations.Update(CalculateEffectAnimation(), elapsedSec);
+	}
 	if (m_PlayerStates.isInvincible)
 	{
 		m_Animations.Update(AnimationState::invincible, elapsedSec);
@@ -165,7 +188,6 @@ void Player::CalculateVelocity(float elapsedSec)
 		break;
 	case MovementState::jump:
 	case MovementState::fall:
-		const Uint8* pStates = SDL_GetKeyboardState(nullptr);
 		if (m_PlayerStates.moveDir == MoveDirection::left)
 		{
 			m_Collision.velocity.x = -m_WalkSpeed * m_AirControl;
@@ -178,6 +200,15 @@ void Player::CalculateVelocity(float elapsedSec)
 		}
 		m_Collision.velocity.x = 0;
 		break;
+	case MovementState::dash:
+		if (m_PlayerStates.lookDirHor == LookDirection::right)
+		{
+			m_Collision.velocity.x = m_DashSpeed;
+		}
+		else
+		{
+			m_Collision.velocity.x = -m_DashSpeed;
+		}
 	}
 
 	//y component
@@ -220,27 +251,34 @@ void Player::HandleKeyboardState()
 
 void Player::SetIsOnGround(bool isOnGround)
 {
+	if (!m_PlayerStates.isOnGround && isOnGround)
+	{
+		PlaySoundEffect(m_LandSound, 1);
+	}
 	m_PlayerStates.isOnGround = isOnGround;
 }
 
 void Player::HandleKeyDown(const SDL_KeyboardEvent& e)
 {
-	switch (e.keysym.sym)
+	if (m_PlayerStates.action != MovementState::dash)
 	{
-	case SDLK_w:
-		m_PlayerStates.lookDir = LookDirection::up;
-		break;
-	case SDLK_s:
-		m_PlayerStates.lookDir = LookDirection::down;
-		break;
-	case SDLK_a:
-		m_PlayerStates.lookDir = LookDirection::left;
-		m_LookDirHor = LookDirection::left;
-		break;
-	case SDLK_d:
-		m_PlayerStates.lookDir = LookDirection::right;
-		m_LookDirHor = LookDirection::right;
-		break;
+		switch (e.keysym.sym)
+		{
+		case SDLK_w:
+			m_PlayerStates.lookDir = LookDirection::up;
+			break;
+		case SDLK_s:
+			m_PlayerStates.lookDir = LookDirection::down;
+			break;
+		case SDLK_a:
+			m_PlayerStates.lookDir = LookDirection::left;
+			m_PlayerStates.lookDirHor = LookDirection::left;
+			break;
+		case SDLK_d:
+			m_PlayerStates.lookDir = LookDirection::right;
+			m_PlayerStates.lookDirHor = LookDirection::right;
+			break;
+		}
 	}
 }
 
@@ -263,7 +301,7 @@ void Player::ResetAnimations(bool isAttackingAnim)
 void Player::InitializeCollision(const Point2f& startPos)
 {
 	verticalOffsetCenter = 15.f;
-	float combatWidth{65}, combatHeight{95}, collisionWidth{40}, collisionHeight{combatHeight},
+	float combatWidth{65}, combatHeight{90}, collisionWidth{40}, collisionHeight{combatHeight},
 		attackWidth{150}, attackHeight{114};
 
 	m_HitboxDif = (combatWidth - collisionWidth) / 2;
@@ -286,7 +324,7 @@ void Player::DrawHitboxes() const
 {
 	Color4f red{ 1,0,0,1 }, green{0,1,0,1};
 	SetColor(red);;
-	DrawRect(m_Collision.combatHitbox);
+	//DrawRect(m_Collision.combatHitbox);
 	//SetColor(green);
 	//DrawRect(m_CollisionHitbox);
 }
@@ -296,7 +334,7 @@ bool Player::ExecuteAttack()
 	if (!m_PlayerStates.isAttacking)
 	{
 		m_PlayerStates.isAttacking = true;
-		if (m_LookDirHor == LookDirection::left)
+		if (m_PlayerStates.lookDirHor == LookDirection::left)
 		{
 			m_Collision.attackHitbox.left = m_Collision.combatHitbox.left - m_Collision.attackHitbox.width;
 		}
@@ -342,21 +380,29 @@ Rectf Player::CalculateAttackHitbox() const
 
 AnimationState Player::CalculateEffectAnimation() const
 {
-	switch (m_PlayerStates.attackDir)
+	if (m_PlayerStates.action == MovementState::dash)
 	{
-	case AttackDirection::horizontal:
-		return AnimationState::slashEffect;
-		break;
-	case AttackDirection::up:
-		return AnimationState::slashEffect;
-		break;
-	case AttackDirection::down:
-		return AnimationState::slashEffect;
-		break;
-	default:
-		return AnimationState::slashEffect;
-		break;
+		return AnimationState::dashEffect;
 	}
+	else if (m_PlayerStates.isAttacking)
+	{
+		switch (m_PlayerStates.attackDir)
+		{
+		case AttackDirection::horizontal:
+			return AnimationState::slashEffect;
+			break;
+		case AttackDirection::up:
+			return AnimationState::slashEffect;
+			break;
+		case AttackDirection::down:
+			return AnimationState::slashEffect;
+			break;
+		default:
+			return AnimationState::slashEffect;
+			break;
+		}
+	}
+	else return AnimationState::slashEffect; // shouldn't be called
 }
 
 void Player::HandleKeyUp(const SDL_KeyboardEvent& e)
@@ -364,22 +410,25 @@ void Player::HandleKeyUp(const SDL_KeyboardEvent& e)
 	const Uint8* pStates = SDL_GetKeyboardState(nullptr);
 
 	//makes sure player faces the right direction when both keys were pressed after release of 1
-	switch (e.keysym.sym)
+	if (m_PlayerStates.action != MovementState::dash)
 	{
-	case SDLK_a:
-		if (pStates[SDL_SCANCODE_D])
+		switch (e.keysym.sym)
 		{
-			m_PlayerStates.lookDir = LookDirection::right;
-			m_LookDirHor = LookDirection::right;
+		case SDLK_a:
+			if (pStates[SDL_SCANCODE_D])
+			{
+				m_PlayerStates.lookDir = LookDirection::right;
+				m_PlayerStates.lookDirHor = LookDirection::right;
+			}
+			break;
+		case SDLK_d:
+			if (pStates[SDL_SCANCODE_A])
+			{
+				m_PlayerStates.lookDir = LookDirection::left;
+				m_PlayerStates.lookDirHor = LookDirection::left;
+			}
+			break;
 		}
-		break;
-	case SDLK_d:
-		if (pStates[SDL_SCANCODE_A])
-		{
-			m_PlayerStates.lookDir = LookDirection::left;
-			m_LookDirHor = LookDirection::left;
-		}
-		break;
 	}
 }
 
@@ -388,9 +437,10 @@ CollisionFunc& Player::GetCollisionFunc()
 	return m_Collision;
 }
 
-void Player::HitPlayer(bool hitBySpike)
+bool Player::HitPlayer(bool hitBySpike)
 {
 	//invincibility is not for spikes, only enemies
+	//returns true if lost health
 	if (m_PlayerStates.action != MovementState::death && m_PlayerStates.action != MovementState::spikeDeath)
 	{
 		if (hitBySpike)
@@ -399,14 +449,19 @@ void Player::HitPlayer(bool hitBySpike)
 			std::cout << m_Health << std::endl;
 			if (m_Health <= 0)
 			{
+				//dead
+				PlaySoundEffect(m_DeathSound, 1);
 				m_PlayerStates.action = MovementState::death;
 				m_Collision.velocity = Vector2f{ 0,0 };
 			}
 			else
 			{
+				//respawn but not dead
+				PlaySoundEffect(m_HitSound, 1);
 				m_PlayerStates.action = MovementState::spikeDeath;
 				m_Collision.velocity = Vector2f{ 0,0 };
 			}
+			return true;
 		}
 		else if (!m_PlayerStates.isInvincible)
 		{
@@ -414,17 +469,23 @@ void Player::HitPlayer(bool hitBySpike)
 			std::cout << m_Health << std::endl;
 			if (m_Health <= 0)
 			{
+				//dead
+				PlaySoundEffect(m_DeathSound, 1);
 				m_PlayerStates.action = MovementState::death;
 				m_Collision.velocity = Vector2f{ 0,0 };
 			}
 			else
 			{
+				//damage
 				m_PlayerStates.isInvincible = true;
 				m_PlayerStates.action = MovementState::damaged;
 				m_Collision.velocity = Vector2f{ 0,0 };
+				PlaySoundEffect(m_HitSound, 1);
 			}
+			return true;
 		}
 	}
+	return false;
 }
 
 void Player::HardRespawn()
@@ -435,8 +496,8 @@ void Player::HardRespawn()
 
 void Player::SoftRespawn()
 {
-	m_Collision.combatHitbox.left = 200;
-	m_Collision.combatHitbox.bottom = 200;
+	m_Collision.combatHitbox.left = m_RespawnPoint.x;
+	m_Collision.combatHitbox.bottom = m_RespawnPoint.y;
 	m_PlayerStates.action = MovementState::idle;
 }
 
@@ -461,6 +522,11 @@ void Player::InitializeSounds()
 {
 	m_NailSwingSound = "Resources/Sounds/NailSwing.wav";
 	m_FootstepSound = "Resources/Sounds/KnightFootSteps.wav";
+	m_LandSound = "Resources/Sounds/Land.wav";
+	m_DashSound = "Resources/Sounds/Dash.wav";
+	m_DeathSound = "Resources/Sounds/KnightDeath.wav";
+	m_HitSound = "Resources/Sounds/KnightHit.wav";
+	m_CollectSound = "Resources/Sounds/ui_button_confirm.wav";
 }
 
 void Player::UpdateSounds(float elapsedSec)
@@ -476,4 +542,27 @@ void Player::UpdateSounds(float elapsedSec)
 	{
 		if (GetIsPlayingEffect(m_FootstepSound)) StopSoundEffect(m_FootstepSound);
 	}
+}
+
+void Player::Dash()
+{
+	if (m_PlayerStates.action != MovementState::death &&
+		m_PlayerStates.action != MovementState::damaged &&
+		m_PlayerStates.action != MovementState::dash)
+	{
+		if (m_StateHandler.CheckForDash())
+		{
+			m_PlayerStates.action = MovementState::dash;
+			PlaySoundEffect(m_DashSound, 1);
+		}
+	}
+}
+
+void Player::SetHasDash(bool hasDash)
+{
+	if (hasDash == true)
+	{
+		PlaySoundEffect(m_CollectSound, 1);
+	}
+	m_StateHandler.SetHasDash(hasDash);
 }

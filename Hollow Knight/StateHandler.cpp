@@ -1,25 +1,33 @@
 #include "StateHandler.h"
 #include "utils.h"
-#include <SDL_keyboard.h>
+#include "SoundUtils.h"
+
+using namespace soundUtils;
 
 StateHandler::StateHandler(PlayerStates startStates)
 	:m_PreviousStates{ startStates },
-	m_AccumulatedTime{ 0 },
-	m_AccumulatedAttackTime{ 0 },
-	m_AccumulatedInvTime{0},
-	m_DashTime{},
-	m_AttackTime{0.5f},
-	m_DeathTime{1.5f},
-	m_MaxJumpTime{0.8f}, 
+	m_GeneralTimer{ 0 },
+	m_AttackTimer{ 0 },
+	m_InvincibilityTimer{ 0 },
+	m_DashTime{ 0.35f },
+	m_DashCooldownTime{ 1 },
+	m_AttackTime{ 0.5f },
+	m_DeathTime{ 1.5f },
+	m_MaxJumpTime{ 0.8f },
 	m_JumpSpeed{ 1300 },
-	m_InvincibilityTime{1.2f},
-	m_RecoilTime{2.f / 3.f}
+	m_InvincibilityTime{ 1.2f },
+	m_RecoilTime{ 2.f / 3.f },
+	m_JumpSound{ "Resources/Sounds/Jump.wav" },
+	m_DashTimer{},
+	m_HasDash{ false },
+	m_DashCooldownTimer{0}
 {}
 
 void StateHandler::Update(PlayerStates& currentState, Vector2f& velocity, float elapsedSec)
 {
 	UpdateAttack(currentState, elapsedSec);
 	UpdateInvincibility(currentState, elapsedSec);
+	m_DashCooldownTimer += elapsedSec;
 	switch (currentState.action)
 	{
 	case MovementState::idle:
@@ -41,6 +49,8 @@ void StateHandler::Update(PlayerStates& currentState, Vector2f& velocity, float 
 	case MovementState::spikeDeath:
 		Death(currentState, elapsedSec);
 		break;
+	case MovementState::dash:
+		Dash(currentState, elapsedSec);
 	}
 }
 
@@ -50,11 +60,11 @@ void StateHandler::UpdateAttack(PlayerStates& currentState, float elapsedSec)
 {
 	if (currentState.isAttacking)
 	{
-		m_AccumulatedAttackTime += elapsedSec;
-		if (m_AccumulatedAttackTime > m_AttackTime)
+		m_AttackTimer += elapsedSec;
+		if (m_AttackTimer > m_AttackTime)
 		{
 			currentState.isAttacking = false;
-			m_AccumulatedAttackTime = 0;
+			m_AttackTimer = 0;
 		}
 	}
 }
@@ -63,10 +73,10 @@ void StateHandler::UpdateInvincibility(PlayerStates& currentState, float elapsed
 {
 	if (currentState.isInvincible)
 	{
-		m_AccumulatedInvTime += elapsedSec;
-		if (m_AccumulatedInvTime > m_InvincibilityTime)
+		m_InvincibilityTimer += elapsedSec;
+		if (m_InvincibilityTimer > m_InvincibilityTime)
 		{
-			m_AccumulatedInvTime = 0;
+			m_InvincibilityTimer = 0;
 			currentState.isInvincible = false;
 		}
 	}
@@ -85,6 +95,7 @@ void StateHandler::Idle(PlayerStates& currentState, Vector2f& velocity, float el
 		{
 			currentState.action = MovementState::jump;
 			velocity.y = m_JumpSpeed;
+			PlaySoundEffect(m_JumpSound, 1);
 		}
 	}
 	else
@@ -105,6 +116,7 @@ void StateHandler::Run(PlayerStates& currentState, Vector2f& velocity, float ela
 		{
 			currentState.action = MovementState::jump;
 			velocity.y = m_JumpSpeed;
+			PlaySoundEffect(m_JumpSound, 1);
 		}
 	}
 	else
@@ -118,14 +130,14 @@ void StateHandler::Jump(PlayerStates& currentState, Vector2f& velocity, float el
 
 	if (!currentState.isOnGround)
 	{
-		m_AccumulatedTime += elapsedSec;
+		m_GeneralTimer += elapsedSec;
 		const Uint8* pStates = SDL_GetKeyboardState(nullptr);
 		if (pStates[SDL_SCANCODE_SPACE])
 		{
-			if (m_AccumulatedTime > m_MaxJumpTime)
+			if (m_GeneralTimer > m_MaxJumpTime)
 			{
 				currentState.action = MovementState::fall;
-				m_AccumulatedTime = 0;
+				m_GeneralTimer = 0;
 			}
 		}
 		else
@@ -135,7 +147,7 @@ void StateHandler::Jump(PlayerStates& currentState, Vector2f& velocity, float el
 			{
 				velocity.y = 0;
 			}
-			m_AccumulatedTime = 0;
+			m_GeneralTimer = 0;
 		}
 	}
 	else
@@ -148,7 +160,7 @@ void StateHandler::Jump(PlayerStates& currentState, Vector2f& velocity, float el
 		{
 			currentState.action = MovementState::idle;
 		}
-		m_AccumulatedTime = 0;
+		m_GeneralTimer = 0;
 	}
 }
 
@@ -169,10 +181,10 @@ void StateHandler::Fall(PlayerStates& currentState, float elapsedSec)
 
 void StateHandler::Damaged(PlayerStates& currentState, float elapsedSec)
 {
-	m_AccumulatedTime += elapsedSec;
-	if(m_AccumulatedTime > m_RecoilTime)
+	m_GeneralTimer += elapsedSec;
+	if(m_GeneralTimer > m_RecoilTime)
 	{
-		m_AccumulatedTime = 0;
+		m_GeneralTimer = 0;
 		if (currentState.isOnGround)
 		{
 			if (CheckDirInput())
@@ -193,11 +205,36 @@ void StateHandler::Damaged(PlayerStates& currentState, float elapsedSec)
 
 void StateHandler::Death(PlayerStates& currentState, float elapsedSec)
 {
-	m_AccumulatedTime += elapsedSec;
-	if (m_AccumulatedTime > m_DeathTime)
+	m_GeneralTimer += elapsedSec;
+	if (m_GeneralTimer > m_DeathTime)
 	{
-		m_AccumulatedTime = 0;
+		m_GeneralTimer = 0;
 		currentState.isRespawning = true;
+	}
+}
+
+void StateHandler::Dash(PlayerStates& currentState, float elapsedSec)
+{
+	m_DashTimer += elapsedSec;
+	if (m_DashTimer > m_DashTime)
+	{
+		m_DashTimer = 0;
+		if (currentState.isOnGround)
+		{
+			if (CheckDirInput())
+			{
+				currentState.action = MovementState::run;
+			}
+			else
+			{
+				currentState.action = MovementState::idle;
+			}
+		}
+		else
+		{
+			currentState.action = MovementState::fall;
+		}
+		currentState.lookDirHor = GetCurrentLookDir(currentState);
 	}
 }
 
@@ -224,3 +261,40 @@ bool StateHandler::CheckJumpInput()
 	return false;
 }
 
+bool StateHandler::CheckForDash()
+{
+	if (m_DashCooldownTimer > m_DashCooldownTime && m_HasDash)
+	{
+		m_DashCooldownTimer = 0;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void StateHandler::SetHasDash(bool hasDash)
+{
+	m_HasDash = hasDash;
+}
+
+LookDirection StateHandler::GetCurrentLookDir(PlayerStates& currentState) const
+{
+	const Uint8* pStates = SDL_GetKeyboardState(nullptr);
+	if (!(pStates[SDL_SCANCODE_A] && pStates[SDL_SCANCODE_D]))
+	{
+		if (pStates[SDL_SCANCODE_A])
+		{
+			return LookDirection::left;
+		}
+		else
+		{
+			return LookDirection::right;
+		}
+	}
+	else
+	{
+		return currentState.lookDirHor;
+	}
+}
