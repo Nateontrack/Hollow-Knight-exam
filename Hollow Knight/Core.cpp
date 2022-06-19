@@ -116,6 +116,9 @@ void Core::Initialize( )
 		return;
 	}
 
+	//Turn off cursor
+	SDL_ShowCursor(SDL_DISABLE);
+
 	m_Initialized = true;
 }
 
