@@ -1,6 +1,8 @@
 #include "Crawlid.h"
 #include "utils.h"
+#include "SoundUtils.h"
 using namespace utils;
+using namespace soundUtils;
 
 Crawlid::Crawlid(const Rectf& boundaries)
 	:Enemy(Rectf{ boundaries.left,boundaries.bottom,110,80 }, boundaries, 2),
@@ -9,8 +11,11 @@ Crawlid::Crawlid(const Rectf& boundaries)
 	m_deathAirTime{0.25f},
 	m_TurnTime{0.1667f},
 	m_AccumulatedTime{},
-	m_WalkSpeed{250}
-{}
+	m_WalkSpeed{250},
+	m_HearingDistance{1000}
+{
+	InitializeSounds();
+}
 
 Crawlid::~Crawlid()
 {
@@ -18,7 +23,7 @@ Crawlid::~Crawlid()
 	m_pAnimations = nullptr;
 }
 
-void Crawlid::Update(float elapsedSec)
+void Crawlid::Update(float elapsedSec, const Point2f& playerPos)
 {
 	HandleState(elapsedSec);
 	HandleHit(elapsedSec);
@@ -41,6 +46,8 @@ void Crawlid::Update(float elapsedSec)
 		UpdatePos(elapsedSec);
 	}
 	m_pAnimations->Update(CalculateAnimationState(), elapsedSec);
+	CalcSoundVolume(GetDistance(playerPos, GetCenterPos()));
+	PlayWalkSound();
 }
 
 void Crawlid::Draw() const
@@ -161,8 +168,10 @@ void Crawlid::HitEnemy()
 			m_MoveDirState = MoveDirection::none;
 			m_IsDead = true;
 			m_AccumulatedTime = 0;
+			PlaySoundEffect(m_DeathSound, m_CurrentVolume);
 		}
 		m_IsHit = true;
+		PlaySoundEffect(m_HitSound, m_CurrentVolume);
 	}
 }
 
@@ -193,4 +202,38 @@ void Crawlid::DrawAnimations() const
 	{
 		m_HitAnimation.Draw(AnimationState::hit, centerPos);
 	}
+}
+
+void Crawlid::CalcSoundVolume(float distance)
+{
+	if (1 - (distance / m_HearingDistance) < 0)
+	{
+		m_CurrentVolume =  0;
+	}
+	else
+	{
+		m_CurrentVolume = 1 - (distance / m_HearingDistance);
+	}
+}
+
+void Crawlid::PlayWalkSound() const
+{
+	if (m_ActionState == CrawlidState::walk || m_ActionState == CrawlidState::turn)
+	{
+		if (!GetIsPlayingEffect(m_WalkSound))
+		{
+			PlaySoundEffect(m_WalkSound, m_CurrentVolume);
+		}
+	}
+	else
+	{
+		if (GetIsPlayingEffect(m_WalkSound)) StopSoundEffect(m_WalkSound);
+	}
+}
+
+void Crawlid::InitializeSounds()
+{
+	m_WalkSound = "Resources/Sounds/CrawlidRun.wav";
+	m_HitSound = "Resources/Sounds/EnemyHit.wav";
+	m_DeathSound = "Resources/Sounds/EnemyDeath.wav";
 }

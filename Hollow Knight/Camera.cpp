@@ -12,7 +12,7 @@ Camera::Camera(float width, float height, float windowScaleFactor, const Rectf& 
 	:m_Width{width},
 	m_Height{height},
 	m_WindowScaleFactor{windowScaleFactor},
-	m_FollowSpeed{12.f},
+	m_FollowSpeed{10.f},
 	m_LevelBoundaries{0,0, width, height}
 {
 	m_Position = Track(target);
@@ -66,7 +66,7 @@ Point2f Camera::Track(const Rectf& target) const
 	Point2f targetCenter{GetCenter(target)};
 
 	Point2f bottomLeftCamera{targetCenter.x - m_Width / 2 / m_WindowScaleFactor,
-		targetCenter.y - m_Height / 2 / m_WindowScaleFactor};
+		targetCenter.y - m_Height / 5 / m_WindowScaleFactor * 2};
 	//target rect is in the middle of camera rect
 
 	return bottomLeftCamera;
