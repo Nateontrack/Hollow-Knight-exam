@@ -1,0 +1,53 @@
+<Spritesheet>
+	<Animation>
+		<id>0</id>
+		<firstPosX>0</firstPosX>
+		<firstPosY>395</firstPosY>
+		<nrFrames>5</nrFrames>
+		<width>117</width>
+		<height>137</height>
+		<isRepeating>1</isRepeating>
+		<repeatFrame>0</repeatFrame>
+		<isAttackAnim>0</isAttackAnim>
+		<frameTime>default</frameTime>
+	</Animation>
+
+	<Animation>
+		<id>1</id>
+		<firstPosX>0</firstPosX>
+		<firstPosY>259</firstPosY>
+		<nrFrames>4</nrFrames>
+		<width>143</width>
+		<height>136</height>
+		<isRepeating>0</isRepeating>
+		<repeatFrame>0</repeatFrame>
+		<isAttackAnim>0</isAttackAnim>
+		<frameTime>default</frameTime>
+	</Animation>
+
+	<Animation>
+		<id>10</id>
+		<firstPosX>0</firstPosX>
+		<firstPosY>108</firstPosY>
+		<nrFrames>2</nrFrames>
+		<width>117</width>
+		<height>151</height>
+		<isRepeating>0</isRepeating>
+		<repeatFrame>0</repeatFrame>
+		<isAttackAnim>0</isAttackAnim>
+		<frameTime>default</frameTime>
+	</Animation>
+
+	<Animation>
+		<id>9</id>
+		<firstPosX>0</firstPosX>
+		<firstPosY>0</firstPosY>
+		<nrFrames>3</nrFrames>
+		<width>140</width>
+		<height>108</height>
+		<isRepeating>0</isRepeating>
+		<repeatFrame>0</repeatFrame>
+		<isAttackAnim>0</isAttackAnim>
+		<frameTime>default</frameTime>
+	</Animation>
+</Spritesheet>
