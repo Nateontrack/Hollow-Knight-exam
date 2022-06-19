@@ -11,6 +11,7 @@ ParallaxManager::ParallaxManager(const std::string& filePath)
 	m_FarClippingPlane{50}
 {
 	LoadLayerDataFromFile(filePath);
+	SortLayerVectors();
 }
 
 ParallaxManager::~ParallaxManager()
