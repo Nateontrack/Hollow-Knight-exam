@@ -1,43 +1,183 @@
 <GameObjects>
-	
 	<GameObject>
 		<ID>0</ID>
-		<PosX>669</PosX>
-		<PosY>300</PosY>
+		<Type>1</Type>
+		<PosX>4773</PosX>
+		<PosY>2272</PosY>
+		<Width>128</Width>
+		<Height>60</Height>
+	</GameObject>
+
+	<GameObject>
+		<ID>0</ID>
+		<Type>1</Type>
+		<PosX>8159</PosX>
+		<PosY>2302</PosY>
+		<Width>128</Width>
+		<Height>60</Height>
+	</GameObject>
+
+	<GameObject>
+		<ID>0</ID>
+		<Type>3</Type>
+		<PosX>3780</PosX>
+		<PosY>2537</PosY>
+		<Width>79</Width>
+		<Height>55</Height>
+	</GameObject>
+
+
+	<GameObject>
+		<ID>0</ID>
+		<Type>5</Type>
+		<PosX>8580</PosX>
+		<PosY>3818</PosY>
+		<Width>127</Width>
+		<Height>60</Height>
+	</GameObject>
+
+	<GameObject>
+		<ID>0</ID>
+		<Type>5</Type>
+		<PosX>8207</PosX>
+		<PosY>3513</PosY>
+		<Width>127</Width>
+		<Height>60</Height>
+	</GameObject>
+
+	<GameObject>
+		<ID>0</ID>
+		<Type>5</Type>
+		<PosX>2684</PosX>
+		<PosY>2514</PosY>
+		<Width>127</Width>
+		<Height>60</Height>
+	</GameObject>
+
+	<GameObject>
+		<ID>0</ID>
+		<Type>5</Type>
+		<PosX>3774</PosX>
+		<PosY>2940</PosY>
+		<Width>127</Width>
+		<Height>60</Height>
+	</GameObject>
+
+	<GameObject>
+		<ID>0</ID>
+		<Type>5</Type>
+		<PosX>7556</PosX>
+		<PosY>2299</PosY>
+		<Width>127</Width>
+		<Height>60</Height>
+	</GameObject>
+
+	<GameObject>
+		<ID>0</ID>
+		<Type>6</Type>
+		<PosX>7790</PosX>
+		<PosY>3734</PosY>
+		<Width>100</Width>
+		<Height>212</Height>
+	</GameObject>
+
+	<GameObject>
+		<ID>0</ID>
+		<Type>6</Type>
+		<PosX>4514</PosX>
+		<PosY>2637</PosY>
+		<Width>100</Width>
+		<Height>212</Height>
+	</GameObject>
+
+	<GameObject>
+		<ID>0</ID>
+		<Type>7</Type>
+		<PosX>7855</PosX>
+		<PosY>4249</PosY>
+		<Width>195</Width>
+		<Height>74</Height>
+	</GameObject>
+
+	<GameObject>
+		<ID>0</ID>
+		<Type>7</Type>
+		<PosX>4248</PosX>
+		<PosY>2130</PosY>
+		<Width>195</Width>
+		<Height>74</Height>
+	</GameObject>
+
+	<GameObject>
+		<ID>0</ID>
+		<Type>8</Type>
+		<PosX>8692</PosX>
+		<PosY>4468</PosY>
+		<Width>100</Width>
+		<Height>140</Height>
+	</GameObject>
+
+	<GameObject>
+		<ID>0</ID>
+		<Type>8</Type>
+		<PosX>4118</PosX>
+		<PosY>2769</PosY>
+		<Width>100</Width>
+		<Height>140</Height>
+	</GameObject>
+
+	<GameObject>
+		<ID>0</ID>
+		<Type>9</Type>
+		<PosX>8324</PosX>
+		<PosY>4137</PosY>
+		<Width>100</Width>
+		<Height>140</Height>
+	</GameObject>
+
+	<GameObject>
+		<ID>0</ID>
+		<Type>9</Type>
+		<PosX>2577</PosX>
+		<PosY>3088</PosY>
+		<Width>100</Width>
+		<Height>120</Height>
 	</GameObject>
 	
 	<GameObject>
-		<ID>0</ID>
-		<PosX>970</PosX>
-		<PosY>430</PosY>
-	</GameObject>
-	
-	<GameObject>
-		<ID>0</ID>
-		<PosX>2003</PosX>
-		<PosY>789</PosY>
-	</GameObject>
-	
-	<GameObject>
-		<ID>0</ID>
-		<PosX>2276</PosX>
-		<PosY>891</PosY>
+		<ID>1</ID>
+		<PosX>7967</PosX>
+		<PosY>2682</PosY>
+		<Width>1193</Width>
+		<Height>73</Height>
 	</GameObject>
 
 	<GameObject>
 		<ID>1</ID>
-		<PosX>1715</PosX>
-		<PosY>430</PosY>
-		<Width>800</Width>
-		<Height>144</Height>
+		<PosX>2363</PosX>
+		<PosY>3473</PosY>
+		<Width>495</Width>
+		<Height>73</Height>
 	</GameObject>
-
+	
 	<GameObject>
 		<ID>2</ID>
 		<PosX>1210</PosX>
-		<PosY>591</PosY>
+		<PosY>650</PosY>
 		<Width>500</Width>
 		<Height>200</Height>
+	</GameObject>
+	
+	<GameObject>
+		<ID>3</ID>
+		<Type>0</Type>
+		<Solid>0</Solid>
+		<Health>1</Health>
+		<PosX>578</PosX>
+		<PosY>645</PosY>
+		<BreakTime>0.45</BreakTime>
+		<Width>74</Width>
+		<Height>175</Height>
 	</GameObject>
 
 	<GameObject>
@@ -45,10 +185,148 @@
 		<Type>0</Type>
 		<Solid>0</Solid>
 		<Health>1</Health>
-		<PosX>669</PosX>
-		<PosY>100</PosY>
+		<PosX>1274</PosX>
+		<PosY>645</PosY>
 		<BreakTime>0.45</BreakTime>
 		<Width>74</Width>
 		<Height>175</Height>
+	</GameObject>
+
+	<GameObject>
+		<ID>3</ID>
+		<Type>0</Type>
+		<Solid>0</Solid>
+		<Health>1</Health>
+		<PosX>7455</PosX>
+		<PosY>4038</PosY>
+		<BreakTime>0.45</BreakTime>
+		<Width>74</Width>
+		<Height>175</Height>
+	</GameObject>
+
+	<GameObject>
+		<ID>3</ID>
+		<Type>0</Type>
+		<Solid>0</Solid>
+		<Health>1</Health>
+		<PosX>5619</PosX>
+		<PosY>4127</PosY>
+		<BreakTime>0.45</BreakTime>
+		<Width>74</Width>
+		<Height>175</Height>
+	</GameObject>
+
+	<GameObject>
+		<ID>3</ID>
+		<Type>1</Type>
+		<Solid>0</Solid>
+		<Health>1</Health>
+		<PosX>7732</PosX>
+		<PosY>388</PosY>
+		<BreakTime>0.45</BreakTime>
+		<Width>74</Width>
+		<Height>175</Height>
+	</GameObject>
+
+	<GameObject>
+		<ID>3</ID>
+		<Type>1</Type>
+		<Solid>0</Solid>
+		<Health>1</Health>
+		<PosX>7325</PosX>
+		<PosY>1472</PosY>
+		<BreakTime>0.45</BreakTime>
+		<Width>74</Width>
+		<Height>175</Height>
+	</GameObject>
+
+	<GameObject>
+		<ID>3</ID>
+		<Type>1</Type>
+		<Solid>0</Solid>
+		<Health>1</Health>
+		<PosX>7091</PosX>
+		<PosY>1739</PosY>
+		<BreakTime>0.45</BreakTime>
+		<Width>74</Width>
+		<Height>175</Height>
+	</GameObject>
+
+	<GameObject>
+		<ID>3</ID>
+		<Type>1</Type>
+		<Solid>0</Solid>
+		<Health>1</Health>
+		<PosX>5120</PosX>
+		<PosY>2012</PosY>
+		<BreakTime>0.45</BreakTime>
+		<Width>74</Width>
+		<Height>175</Height>
+	</GameObject>
+
+	<GameObject>
+		<ID>3</ID>
+		<Type>2</Type>
+		<Solid>1</Solid>
+		<Health>1</Health>
+		<PosX>2412</PosX>
+		<PosY>587</PosY>
+		<BreakTime>0.45</BreakTime>
+		<Width>90</Width>
+		<Height>300</Height>
+	</GameObject>
+
+	<GameObject>
+		<ID>3</ID>
+		<Type>2</Type>
+		<Solid>1</Solid>
+		<Health>1</Health>
+		<PosX>3235</PosX>
+		<PosY>587</PosY>
+		<BreakTime>0.45</BreakTime>
+		<Width>90</Width>
+		<Height>300</Height>
+	</GameObject>
+
+	<GameObject>
+		<ID>3</ID>
+		<Type>2</Type>
+		<Solid>1</Solid>
+		<Health>1</Health>
+		<PosX>4064</PosX>
+		<PosY>587</PosY>
+		<BreakTime>0.45</BreakTime>
+		<Width>90</Width>
+		<Height>300</Height>
+	</GameObject>
+
+	<GameObject>
+		<ID>3</ID>
+		<Type>2</Type>
+		<Solid>1</Solid>
+		<Health>1</Health>
+		<PosX>5347</PosX>
+		<PosY>587</PosY>
+		<BreakTime>0.45</BreakTime>
+		<Width>90</Width>
+		<Height>300</Height>
+	</GameObject>
+
+	<GameObject>
+		<ID>3</ID>
+		<Type>2</Type>
+		<Solid>1</Solid>
+		<Health>1</Health>
+		<PosX>7029</PosX>
+		<PosY>587</PosY>
+		<BreakTime>0.45</BreakTime>
+		<Width>90</Width>
+		<Height>300</Height>
+	</GameObject>
+
+	<GameObject>
+		<ID>4</ID>
+		<PosX>2012</PosX>
+		<PosY>650</PosY>
 	</GameObject>
 </GameObjects>
