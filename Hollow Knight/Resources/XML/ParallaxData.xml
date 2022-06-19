@@ -1,5 +1,12 @@
 <LayerData>
 	<Layer>
+		<Texture>Resources/Sprites/Foreground2.png</Texture>
+		<StartPosX>0</StartPosX>
+		<StartPosY>0</StartPosY>
+		<ZPos>-2</ZPos>
+	</Layer>
+	
+	<Layer>
 		<Texture>Resources/Sprites/Foreground.png</Texture>
 		<StartPosX>0</StartPosX>
 		<StartPosY>0</StartPosY>
@@ -7,7 +14,28 @@
 	</Layer>
 
 	<Layer>
-		<Texture>Resources/Sprites/Background.png</Texture>
+		<Texture>Resources/Sprites/Background1.png</Texture>
+		<StartPosX>0</StartPosX>
+		<StartPosY>0</StartPosY>
+		<ZPos>2</ZPos>
+	</Layer>
+
+	<Layer>
+		<Texture>Resources/Sprites/Background2.png</Texture>
+		<StartPosX>0</StartPosX>
+		<StartPosY>0</StartPosY>
+		<ZPos>45</ZPos>
+	</Layer>
+
+	<Layer>
+		<Texture>Resources/Sprites/Background3.png</Texture>
+		<StartPosX>0</StartPosX>
+		<StartPosY>0</StartPosY>
+		<ZPos>47.5</ZPos>
+	</Layer>
+	
+	<Layer>
+		<Texture>Resources/Sprites/Background4.png</Texture>
 		<StartPosX>0</StartPosX>
 		<StartPosY>0</StartPosY>
 		<ZPos>50</ZPos>
