@@ -11,7 +11,7 @@ int main( int argc, char *argv[] )
 
 	StartHeapControl();
 
-	Core* pCore{ new Core{ Window{ "Hollow Knight - Stevens, Nathan - 1DAE13", 1280.f , 720.f } } };
+	Core* pCore{ new Core{ Window{ "Hollow Knight - Stevens, Nathan - 1DAE13", 1280.f , 720.f, false } } };
 	pCore->Run();
 	delete pCore;
 

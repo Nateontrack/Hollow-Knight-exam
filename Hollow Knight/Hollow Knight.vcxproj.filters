@@ -25,6 +25,9 @@
     <Filter Include="Game Files\Sound">
       <UniqueIdentifier>{3d6a94c6-9f1a-47c5-a0e5-e45210a04de1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game Files\HUD &amp; UI">
+      <UniqueIdentifier>{c6800d16-cb7b-46ef-b631-0b33433770e6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -111,6 +114,18 @@
     <ClCompile Include="SoundUtils.cpp">
       <Filter>Game Files\Sound</Filter>
     </ClCompile>
+    <ClCompile Include="HUD.cpp">
+      <Filter>Game Files\HUD &amp; UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Menu.cpp">
+      <Filter>Game Files\HUD &amp; UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>Game Files\HUD &amp; UI</Filter>
+    </ClCompile>
+    <ClCompile Include="PowerUp.cpp">
+      <Filter>Game Files\GameObjects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core.h">
@@ -194,6 +209,18 @@
     <ClInclude Include="SoundUtils.h">
       <Filter>Game Files\Sound</Filter>
     </ClInclude>
+    <ClInclude Include="HUD.h">
+      <Filter>Game Files\HUD &amp; UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Menu.h">
+      <Filter>Game Files\HUD &amp; UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>Game Files\HUD &amp; UI</Filter>
+    </ClInclude>
+    <ClInclude Include="PowerUp.h">
+      <Filter>Game Files\GameObjects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Resources\XML\KnightAnimations.xml">
@@ -218,6 +245,15 @@
       <Filter>Resource Files</Filter>
     </Xml>
     <Xml Include="Resources\XML\SpikeBAnim.xml">
+      <Filter>Resource Files</Filter>
+    </Xml>
+    <Xml Include="Resources\XML\HealthAnim.xml">
+      <Filter>Resource Files</Filter>
+    </Xml>
+    <Xml Include="Resources\XML\Dash.xml">
+      <Filter>Resource Files</Filter>
+    </Xml>
+    <Xml Include="VengeflyAnim.xml">
       <Filter>Resource Files</Filter>
     </Xml>
   </ItemGroup>
