@@ -290,16 +290,20 @@ float utils::GetDistance(const Point2f& p1, const Point2f& p2)
 	return GetDistance(p1.x, p1.y, p2.x, p2.y);
 }
 
-std::vector<Point2f> utils::GetVertices(const Rectf& rect)
+std::vector<Point2f> utils::GetCollisionVertices(const Rectf& rect)
 {
 	//bottomLeft: 0
-	//topLeft: 1
-	//topRight: 2
-	//bottomRight: 3
+	//middleLeft: 1
+	//topleft: 2
+	//topRight: 3
+	//middleRight: 4
+	//bottomRight: 5
 	std::vector<Point2f> vertices{};
 	vertices.push_back(Point2f{ rect.left, rect.bottom });
+	vertices.push_back(Point2f{ rect.left, rect.bottom + rect.height / 2 });
 	vertices.push_back(Point2f{ rect.left, rect.bottom + rect.height });
 	vertices.push_back(Point2f{ rect.left + rect.width, rect.bottom + rect.height });
+	vertices.push_back(Point2f{ rect.left + rect.width, rect.bottom + rect.height / 2 });
 	vertices.push_back(Point2f{ rect.left + rect.width, rect.bottom });
 
 	return vertices;
