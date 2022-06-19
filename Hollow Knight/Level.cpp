@@ -12,9 +12,9 @@ using namespace soundUtils;
 Level::Level(const std::string& filePath, const Point2f& startPos)
 	:m_CollisionOffset{0.01f},
 	m_RespawnPos{startPos},
-	m_AmbientSound{"Resources/Sounds/CaveAmbience.wav"}
+	m_AmbientSound{"Resources/Sounds/Dirtmouth 1.wav"}
 {
-	//PlaySoundStream(m_AmbientSound);
+	PlaySoundStream(m_AmbientSound);
 	InitLevelVerts();
 	InitLevelBoundaries();
 	LoadGameObjectDataFromFile(filePath);
@@ -38,26 +38,27 @@ void Level::InitLevelBoundaries()
 {
 	m_Boundaries.left = 0;
 	m_Boundaries.bottom = 0;
-	m_Boundaries.width = 2581;
-	m_Boundaries.height = 1665;
+	m_Boundaries.width = 10850;
+	m_Boundaries.height = 4700;
 }
 
 void Level::DrawEntities() const
 {
 	DrawEnemies();
 	DrawBreakables();
+	DrawPowerUps();
 }
 
 void Level::DrawForeground() const
 {
 	DrawPlatforms();
-	DrawDebugRectsSpikes();
 }
 
-void Level::HandleCollision(Rectf& actorHitbox, Vector2f& actorVelocity)
+void Level::HandleCollision(Rectf& actorHitbox, Vector2f& actorVelocity, float elapsedSec)
 {
-	HandleCollisionLevel(actorHitbox, actorVelocity);
-	HandleCollisionPlatforms(actorHitbox, actorVelocity);
+	HandleCollisionLevel(actorHitbox, actorVelocity, elapsedSec);
+	HandleCollisionPlatforms(actorHitbox, actorVelocity, elapsedSec);
+	HandleCollisionBreakables(actorHitbox, actorVelocity, elapsedSec);
 }
 
 bool Level::CheckForHitEnemies(const Rectf& actorHitbox) const
@@ -72,53 +73,92 @@ bool Level::CheckForHitEnemies(const Rectf& actorHitbox) const
 	return false;
 }
 
-void Level::HandleCollisionLevel(Rectf& actorHitbox, Vector2f& actorVelocity)
+bool Level::CheckForHitPowerUp(const Rectf& actorHitbox)
 {
-	std::vector<Point2f> actorVertices{ GetVertices(actorHitbox) };
+	for (PowerUp* it : m_pPowerUps)
+	{
+		if (it->CheckForHit(actorHitbox))
+		{
+			delete it;
+			it = nullptr;
+			m_pPowerUps.clear();
+			return true;
+		}
+	}
+	return false;
+}
 
-	Vector2f bottomOffset{ 0, actorHitbox.height / 2 }, topOffset{ 0, -actorHitbox.height / 2 },
-		leftOffset{ actorHitbox.width / 2,0 }, rightOffset{ -actorHitbox.width / 2,0 };
+void Level::HandleCollisionLevel(Rectf& actorHitbox, Vector2f& actorVelocity, float elapsedSec)
+{
+	//vertices are ordered clockwise starting bottom left
+	std::vector<Point2f> actorVertices{ GetCollisionVertices(actorHitbox) };
+	Vector2f futureTranslateX{ actorVelocity.x * elapsedSec, 0 }, futureTranslateY{ 0, actorVelocity.y * elapsedSec };
 	HitInfo info{};
 
-
-	//bottom
-	if (Raycast(m_Vertices[0], actorVertices[0], Point2f{actorVertices[0] + bottomOffset}, info) ||
-		Raycast(m_Vertices[0], actorVertices[3], Point2f{ actorVertices[3] + bottomOffset }, info))
-	{
-		actorVelocity.y = 0;
-		actorHitbox.bottom = info.intersectPoint.y + m_CollisionOffset;
-	}
-	
-	//top
-	if (Raycast(m_Vertices[0], actorVertices[1], Point2f{ actorVertices[1] + topOffset }, info) ||
-		Raycast(m_Vertices[0], actorVertices[2], Point2f{ actorVertices[2] + topOffset }, info))
-	{
-		actorVelocity.y = 0;
-		actorHitbox.bottom = info.intersectPoint.y - actorHitbox.height - m_CollisionOffset;
-	}
-
 	//left
-	if (Raycast(m_Vertices[0], actorVertices[0], Point2f{ actorVertices[0] + leftOffset }, info) ||
-		Raycast(m_Vertices[0], actorVertices[1], Point2f{ actorVertices[1] + leftOffset }, info))
+	if (Raycast(m_Vertices[0], actorVertices[0], Point2f{ actorVertices[0] + futureTranslateX }, info) ||
+		Raycast(m_Vertices[0], actorVertices[2], Point2f{ actorVertices[2] + futureTranslateX }, info))
 	{
 		actorVelocity.x = 0;
 		actorHitbox.left = info.intersectPoint.x + m_CollisionOffset;
 	}
 
 	//right
-	if (Raycast(m_Vertices[0], actorVertices[2], Point2f{ actorVertices[2] + rightOffset }, info) ||
-		Raycast(m_Vertices[0], actorVertices[3], Point2f{ actorVertices[3] + rightOffset }, info))
+	else if (Raycast(m_Vertices[0], actorVertices[3], Point2f{ actorVertices[3] + futureTranslateX }, info) ||
+		Raycast(m_Vertices[0], actorVertices[5], Point2f{ actorVertices[5] + futureTranslateX }, info))
 	{
 		actorVelocity.x = 0;
 		actorHitbox.left = info.intersectPoint.x - actorHitbox.width - m_CollisionOffset;
 	}
+
+	//bottom
+	else if (Raycast(m_Vertices[0], actorVertices[0], Point2f{ actorVertices[0] + futureTranslateY }, info) ||
+		Raycast(m_Vertices[0], actorVertices[5], Point2f{ actorVertices[5] + futureTranslateY }, info))
+	{
+		actorVelocity.y = 0;
+		actorHitbox.bottom = info.intersectPoint.y + m_CollisionOffset;
+	}
+
+	//top
+	else if (Raycast(m_Vertices[0], actorVertices[2], Point2f{ actorVertices[2] + futureTranslateY }, info) ||
+		Raycast(m_Vertices[0], actorVertices[3], Point2f{ actorVertices[3] + futureTranslateY }, info))
+	{
+		actorVelocity.y = 0;
+		actorHitbox.bottom = info.intersectPoint.y - actorHitbox.height - m_CollisionOffset;
+	}
+
+	actorVertices = GetCollisionVertices(actorHitbox);
+
+	//bottom
+	if (Raycast(m_Vertices[0], actorVertices[0], Point2f{ actorVertices[0] + futureTranslateY }, info) ||
+		Raycast(m_Vertices[0], actorVertices[5], Point2f{ actorVertices[5] + futureTranslateY }, info))
+	{
+		actorVelocity.y = 0;
+		actorHitbox.bottom = info.intersectPoint.y + m_CollisionOffset;
+	}
+
+	//top
+	else if (Raycast(m_Vertices[0], actorVertices[2], Point2f{ actorVertices[2] + futureTranslateY }, info) ||
+		Raycast(m_Vertices[0], actorVertices[3], Point2f{ actorVertices[3] + futureTranslateY }, info))
+	{
+		actorVelocity.y = 0;
+		actorHitbox.bottom = info.intersectPoint.y - actorHitbox.height - m_CollisionOffset;
+	}
 }
 
-void Level::HandleCollisionPlatforms(Rectf& actorHitbox, Vector2f& actorVelocity)
+void Level::HandleCollisionPlatforms(Rectf& actorHitbox, Vector2f& actorVelocity, float elapsedSec)
 {
 	for (Platform* it : m_pPlatforms)
 	{
-		it->HandleCollision(actorHitbox, actorVelocity);
+		it->HandleCollision(actorHitbox, actorVelocity, elapsedSec);
+	}
+}
+
+void Level::HandleCollisionBreakables(Rectf& actorHitbox, Vector2f& actorVelocity, float elapsedSec)
+{
+	for (Breakable* it : m_pBreakables)
+	{
+		it->HandleCollision(actorHitbox, actorVelocity, elapsedSec);
 	}
 }
 
@@ -145,10 +185,13 @@ bool Level::IsOnGround(const Rectf& actorHitbox) const
 
 bool Level::IsOnGroundLevel(const Rectf& actorHitbox) const
 {
-	Point2f middleBottom{ actorHitbox.left + actorHitbox.width / 2, actorHitbox.bottom },
-		underActor{ middleBottom.x, middleBottom.y - 1 };
+	std::vector<Point2f> actorVertices{ GetCollisionVertices(actorHitbox) };
+
+	Vector2f offset{ 0,-1 };
 	HitInfo info{};
-	if (Raycast(m_Vertices[0], middleBottom, underActor, info))
+
+	if (Raycast(m_Vertices[0], actorVertices[0], Point2f{actorVertices[0] + offset}, info) ||
+		Raycast(m_Vertices[0], actorVertices[5], Point2f{actorVertices[5] + offset}, info))
 	{
 		return true;
 	}
@@ -201,6 +244,13 @@ void Level::CleanUp()
 		it = nullptr;
 	}
 	m_pBreakables.clear();
+
+	for (PowerUp* it : m_pPowerUps)
+	{
+		delete it;
+		it = nullptr;
+	}
+	m_pPowerUps.clear();
 }
 
 void Level::DrawPlatforms() const
@@ -211,11 +261,11 @@ void Level::DrawPlatforms() const
 	}
 }
 
-void Level::UpdateEnemies(float elapsedSec)
+void Level::UpdateEnemies(float elapsedSec, const Point2f& playerPos)
 {
 	for (Enemy* it : m_pEnemies)
 	{
-		it->Update(elapsedSec);
+		it->Update(elapsedSec, playerPos);
 	}
 }
 
@@ -227,18 +277,10 @@ void Level::DrawEnemies() const
 	}
 }
 
-void Level::Update(float elapsedSec)
+void Level::Update(float elapsedSec, const Point2f& playerPos)
 {
-	UpdateEnemies(elapsedSec);
+	UpdateEnemies(elapsedSec, playerPos);
 	UpdateBreakables(elapsedSec);
-}
-
-void Level::DrawDebugRectsSpikes() const
-{
-	for (Spike* it : m_pSpikes)
-	{
-		it->DrawHitbox();
-	}
 }
 
 void Level::HandleAttack(const Rectf& attackRect)
@@ -269,6 +311,14 @@ void Level::UpdateBreakables(float elapsedSec)
 	for (Breakable* pBreakable : m_pBreakables)
 	{
 		pBreakable->Update(elapsedSec);
+	}
+}
+
+void Level::DrawPowerUps() const
+{
+	for (PowerUp* pPowerUp : m_pPowerUps)
+	{
+		pPowerUp->Draw();
 	}
 }
 
@@ -345,6 +395,9 @@ void Level::CreateGameObject(const std::string& gameObjectData)
 	case GameObjectType::breakable:
 		CreateBreakable(gameObjectData);
 		break;
+	case GameObjectType::powerUp:
+		CreatePowerUp(gameObjectData);
+		break;
 	}
 }
 
@@ -352,7 +405,7 @@ void Level::CreateSpike(const std::string& spikeData)
 {
 	Rectf hitbox{};
 	hitbox.left = std::stof(GetAttributeValue("PosX", spikeData));
-	hitbox.bottom = std::stof(GetAttributeValue("PosY", spikeData));
+	hitbox.bottom = 5103 - std::stof(GetAttributeValue("PosY", spikeData)) - 100;
 	hitbox.width = std::stof(GetAttributeValue("Width", spikeData));
 	hitbox.height = std::stof(GetAttributeValue("Height", spikeData));
 
@@ -362,10 +415,15 @@ void Level::CreateSpike(const std::string& spikeData)
 void Level::CreatePlatform(const std::string& platformData)
 {
 	Point2f pos{};
+	PlatformType type{};
+	float width{}, height{};
 	pos.x = std::stof(GetAttributeValue("PosX", platformData));
-	pos.y = std::stof(GetAttributeValue("PosY", platformData));
+	pos.y = 5103.f - std::stof(GetAttributeValue("PosY", platformData)) - 210;
+	width = std::stof(GetAttributeValue("Width", platformData));
+	height = std::stof(GetAttributeValue("Height", platformData));
+	type = static_cast<PlatformType>(std::stoi(GetAttributeValue("Type", platformData)));
 
-	m_pPlatforms.push_back(new Platform{ pos });
+	m_pPlatforms.push_back(new Platform{ Rectf{pos.x, pos.y, width, height}, type});
 }
 
 void Level::CreateCrawlid(const std::string& crawlidData)
@@ -412,5 +470,15 @@ void Level::CreateBreakable(const std::string& breakableData)
 	}
 
 	m_pBreakables.push_back(new Breakable{ maxHealth, hitbox, xmlPath, isSolid, breakTime});
+}
+
+void Level::CreatePowerUp(const std::string& powerUpData)
+{
+	Point2f pos{};
+
+	pos.x = std::stof(GetAttributeValue("PosX", powerUpData));
+	pos.y = std::stof(GetAttributeValue("PosY", powerUpData));
+
+	m_pPowerUps.push_back( new PowerUp{pos} );
 }
 #pragma endregion parsing
