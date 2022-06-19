@@ -10,7 +10,7 @@ public:
 	virtual ~Enemy() = default;
 
 	virtual void Draw() const = 0;
-	virtual void Update(float elapsedSec) = 0;
+	virtual void Update(float elapsedSec, const Point2f& playerPos) = 0;
 	/*virtual bool HandleCollision(const Rectf& actorHitbox) = 0;*/
 	
 	bool CheckForHit(const Rectf& hitbox) const;
