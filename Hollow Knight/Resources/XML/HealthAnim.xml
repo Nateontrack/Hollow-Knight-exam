@@ -1,0 +1,43 @@
+<Spritesheet>
+	
+	<Animation>
+		<id>0</id>
+		<firstPosX>0</firstPosX>
+		<firstPosY>145</firstPosY>
+		<nrFrames>11</nrFrames>
+		<width>78</width>
+		<height>152</height>
+		<isRepeating>1</isRepeating>
+		<repeatFrame>0</repeatFrame>
+		<isAttackAnim>0</isAttackAnim>
+		<frameTime>default</frameTime>
+	</Animation>
+
+	<Animation>
+		<id>11</id>
+		<firstPosX>858</firstPosX>
+		<firstPosY>145</firstPosY>
+		<nrFrames>6</nrFrames>
+		<width>78</width>
+		<height>152</height>
+		<isRepeating>0</isRepeating>
+		<repeatFrame>0</repeatFrame>
+		<isAttackAnim>0</isAttackAnim>
+		<frameTime>default</frameTime>
+	</Animation>
+
+	<Animation>
+		<id>9</id>
+		<firstPosX>1326</firstPosX>
+		<firstPosY>145</firstPosY>
+		<nrFrames>1</nrFrames>
+		<width>78</width>
+		<height>152</height>
+		<isRepeating>1</isRepeating>
+		<repeatFrame>0</repeatFrame>
+		<isAttackAnim>0</isAttackAnim>
+		<frameTime>default</frameTime>
+	</Animation>
+	
+</Spritesheet>
+
