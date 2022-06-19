@@ -9,13 +9,16 @@
 Game::Game( const Window& window ) 
 	:m_Window{ window },
 	m_Level{ "Resources/XML/GameObjects.xml", Point2f{window.width / 2, 200} },
-	m_StartPosPlayer{window.width / 2, 200},
+	m_StartPosPlayer{890, 900},
 	m_ParallaxManager{"Resources/XML/ParallaxData.xml"},
 	m_WindowScaleFactor{2.f / 3.f},
 	m_Fader{0,0,0,0},
 	m_ElapsedFadeTime{2.f},
 	m_IsFading{true},
-	m_FadeTime{4.f}
+	m_IsPaused{true},
+	m_FadeTime{3.5f},
+	m_HUD{},
+	m_Menu{}
 {
 	Initialize( );
 }
@@ -42,22 +45,26 @@ void Game::Cleanup( )
 
 void Game::Update( float elapsedSec )
 {
-	PlayerStates first{ m_Player->GetState()};
-
-	m_Player->SetIsOnGround(m_Level.IsOnGround(m_Player->GetCollisionFunc().combatHitbox));
-	m_Player->Update(elapsedSec);
-	m_Level.HandleCollision(m_Player->GetCollisionFunc().combatHitbox, m_Player->GetCollisionFunc().velocity);
-	HandlePlayerHit();
-	m_Level.Update(elapsedSec);
-	m_Camera.Update(m_Player->GetCollisionFunc().combatHitbox, elapsedSec);
-	m_ParallaxManager.Update(m_Camera.GetLastCameraTransform());
-	CheckForFading();
-	if (m_IsFading)
+	if (!m_IsPaused)
 	{
-		FadeScreen(elapsedSec);
+		PlayerStates first{ m_Player->GetState() };
+
+		m_Player->SetIsOnGround(m_Level.IsOnGround(m_Player->GetCollisionFunc().combatHitbox));
+		m_Player->Update(elapsedSec);
+		m_Level.HandleCollision(m_Player->GetCollisionFunc().combatHitbox, m_Player->GetCollisionFunc().velocity, elapsedSec);
+		m_Player->MovePlayer(elapsedSec);
+		HandlePlayerHit();
+		m_Level.Update(elapsedSec, m_Player->GetCenterPos());
+		m_Camera.Update(m_Player->GetCollisionFunc().combatHitbox, elapsedSec);
+		m_HUD.Update(elapsedSec);
+		m_ParallaxManager.Update(m_Camera.GetLastCameraTransform());
+		CheckForFading();
+		if (m_IsFading)
+		{
+			FadeScreen(elapsedSec);
+		}
+		ResetKnightAnimations(first); //resets animation if changed in state
 	}
-	ResetKnightAnimations(first);
-	//resets animation if changed in state
 }
 
 void Game::Draw( )
@@ -66,14 +73,21 @@ void Game::Draw( )
 	glPushMatrix();
 	{
 		glScalef(m_WindowScaleFactor, m_WindowScaleFactor, 1); // 2 thirds for 720p
-		m_Camera.Transform();
-		m_ParallaxManager.DrawBackground();
-		m_Level.DrawEntities();
-		m_Player->Draw();
-		m_ParallaxManager.DrawForeground();
-		m_Level.DrawForeground();
+		glPushMatrix();
+		{
+			m_Camera.Transform();
+			m_ParallaxManager.DrawBackground();
+			m_Level.DrawEntities();
+			m_Player->Draw();
+			m_ParallaxManager.DrawForeground();
+			m_Level.DrawForeground();
+		}
+		glPopMatrix();
+		m_HUD.Draw();
+		m_Menu.Draw();
 	}
 	glPopMatrix();
+	
 	if (m_IsFading)
 	{
 		utils::SetColor(m_Fader);
@@ -84,6 +98,13 @@ void Game::Draw( )
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
 {
 	m_Player->HandleKeyDown(e);
+	switch (e.keysym.sym)
+	{
+	case SDLK_ESCAPE:
+		m_Menu.OnEscapeKeyDown();
+		m_IsPaused = m_Menu.GetIsPaused();
+		break;
+	}
 }
 
 void Game::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )
@@ -93,7 +114,11 @@ void Game::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )
 
 void Game::ProcessMouseMotionEvent( const SDL_MouseMotionEvent& e )
 {
-	//std::cout << "MOUSEMOTION event: " << e.x << ", " << e.y << std::endl;
+	if (m_IsPaused)
+	{
+		m_Menu.OnMouseMovement(Point2f{ static_cast<float>(e.x) * (1 / m_WindowScaleFactor),
+				static_cast<float>(e.y) * (1 / m_WindowScaleFactor) });
+	}
 }
 
 void Game::ProcessMouseDownEvent( const SDL_MouseButtonEvent& e )
@@ -101,13 +126,31 @@ void Game::ProcessMouseDownEvent( const SDL_MouseButtonEvent& e )
 	switch (e.button)
 	{
 	case SDL_BUTTON_LEFT:
-		if (m_Player->ExecuteAttack())
+		if (m_IsPaused)
 		{
-			m_Level.HandleAttack(m_Player->GetCollisionFunc().attackHitbox);
+			m_Menu.OnMouseDown(Point2f{ static_cast<float>(e.x) * (1 / m_WindowScaleFactor),
+				static_cast<float>(e.y)* (1 / m_WindowScaleFactor) });
+			m_IsPaused = m_Menu.GetIsPaused();
+			if (m_Menu.GetQuitGame())
+			{
+				//pushes quit event in the queue
+				SDL_Event event;
+				event.type = SDL_QUIT;
+				SDL_PushEvent(&event);
+			}
+		}
+		else
+		{
+			if (m_Player->ExecuteAttack())
+			{
+				m_Level.HandleAttack(m_Player->GetCollisionFunc().attackHitbox);
+			}
 		}
 		break;
+	case SDL_BUTTON_RIGHT:
+		m_Player->Dash();
+		break;
 	}
-	
 }
 
 void Game::ProcessMouseUpEvent( const SDL_MouseButtonEvent& e )
@@ -149,11 +192,23 @@ void Game::HandlePlayerHit()
 {
 	if (m_Level.CheckForHitSpikes(m_Player->GetCollisionFunc().combatHitbox))
 	{
-		m_Player->HitPlayer(true);
+		if (m_Player->HitPlayer(true))
+		{
+			m_HUD.HandleHit();
+		}
 	}
 	else if (m_Level.CheckForHitEnemies(m_Player->GetCollisionFunc().combatHitbox))
 	{
-		m_Player->HitPlayer(false);
+		if (m_Player->HitPlayer(false)) 
+		{
+			m_HUD.HandleHit();
+		}
+	}
+
+	if (m_Level.CheckForHitPowerUp(m_Player->GetCollisionFunc().combatHitbox))
+	{
+		m_Player->SetHasDash(true);
+		m_HUD.SetHasDash(true);
 	}
 }
 

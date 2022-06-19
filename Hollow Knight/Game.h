@@ -5,6 +5,8 @@
 #include "Camera.h"
 #include "ParallaxManager.h"
 #include "TextureManager.h"
+#include "HUD.h"
+#include "Menu.h"
 
 class Game final
 {
@@ -33,10 +35,13 @@ private:
 	Player* m_Player;
 	Camera m_Camera;
 	ParallaxManager m_ParallaxManager;
+	HUD m_HUD;
+	Menu m_Menu;
 
 	const float m_FadeTime;
 	float m_ElapsedFadeTime;
 	bool m_IsFading;
+	bool m_IsPaused;
 	Color4f m_Fader;
 
 	Point2f m_StartPosPlayer;
