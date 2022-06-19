@@ -4,9 +4,9 @@
 <svg
    version="1.1"
    id="svg9"
-   width="2581"
-   height="1665"
-   viewBox="0 0 2581 1665"
+   width="11523"
+   height="5103"
+   viewBox="0 0 11523 5103"
    sodipodi:docname="LevelVertices.svg"
    inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -25,12 +25,12 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      showgrid="false"
-     inkscape:zoom="0.48528529"
-     inkscape:cx="1290.9932"
-     inkscape:cy="502.79703"
+     inkscape:zoom="0.37496234"
+     inkscape:cx="1337.4677"
+     inkscape:cy="3501.685"
      inkscape:window-width="1920"
      inkscape:window-height="1017"
-     inkscape:window-x="-8"
+     inkscape:window-x="1912"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:current-layer="g15" />
@@ -38,13 +38,10 @@
      inkscape:groupmode="layer"
      inkscape:label="Image"
      id="g15">
-    
-"
-       id="image17" />
-    <path
+
+<path
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 0,0 94,-2 86,1570 H 1211 v -482 h 494 v 86 h 783 L 2491,6 h 96 L 2581,1665 H 0 Z"
-       id="path132"
-       sodipodi:nodetypes="ccccccccccccc" />
+       d="M 20,4456 H 5834 v 132 h 333 v -132 h 1403 v 260 h 371 v 126 h 1108 v -58 h 727 V 4458 H 9117 V 4041 H 8940 V 3034 H 7520 v -103 h -228 v -450 h -560 v 239 h -314 v -224 h -803 v 154 h -262 v -571 h -116 V 1369 H 3805 v -28 H 3675 V 1165 h 744 v -130 h 475 v -67 h 1525 v 891 h 703 v 363 h 335 v 462 h 512 v 56 h 1223 v -330 h -207 v -252 h 205 V 1821 h 205 V 1117 H 8395 V 949 H 11177 V 77 H 8094 V 1280 h 632 v 200 h 349 v 112 h -896 v -53 H 7456 V 488 H 4515 V 360 H 3136 V 1434 h 221 v 269 h 336 v 200 h 208 v 125 h 264 v 181 h -733 v 944 h -330 v -21 h -93 v -184 h 224 v -405 h -216 v -186 h 346 v -560 h -242 v -162 h -685 v 464 h 458 v 181 h -514 v 1282 h 490 v -149 h 802 v -64 h 1408 v -269 h 1936 v 282 h 216 v 256 h 312 v 429 H 6883 V 3787 H 5587 v 298 H 5296 V 3899 H 4280 v 242 H 2066 V 3296 H 21 Z"
+       id="path1999" />
   </g>
 </svg>
