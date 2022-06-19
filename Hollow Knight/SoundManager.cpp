@@ -3,7 +3,7 @@
 
 SoundManager::SoundManager()
 	:m_EffectsVolume{50},
-	m_StreamVolume{50},
+	m_StreamVolume{70},
 	m_pCurrentStream{nullptr}
 {}
 
@@ -137,6 +137,7 @@ void SoundManager::SetStreamVolume(int volume)
 	if (volume >= 0 && volume <= 100)
 	{
 		m_StreamVolume = volume;
+		m_pCurrentStream->SetVolume(volume);
 	}
 }
 

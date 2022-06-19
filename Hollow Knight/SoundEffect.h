@@ -15,8 +15,8 @@ public:
 	bool Play( int loops );
 	void SetVolume( int value ); 
 	int GetVolume( ) const; 
-	void Pause();
-	void Stop();
+	void Pause( );
+	void Stop( );
 
 	static void StopAll( );
 	static void PauseAll( );
